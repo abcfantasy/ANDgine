@@ -1,59 +1,49 @@
 #include <vector>
+#include <set>
 #include "SDL.h"
-#include "SDL_opengl.h"
+#include "GL/glew.h"
+#include "Matrix.h"
 #include "SceneNode.h"
-#include "Vertex3f.h"
+#include "Vertex4f.h"
+#include "VertexManager.h"
+#include "FrameIndexBuffer.h"
 #include "ModelNode.h"
 
 ModelNode::ModelNode() {
-	this->setRotation( 0, 0, 0 );
-	this->setTranslation( 0, 0, 0 );
+	Matrix::buildIdentity( this->getMatrix() );
 	this->setVelocity( 0, 0, 0 );
 	this->setAngleVelocity( 0, 0, 0 );
-	this->setDisplayListId( -1 );
 };
 
 ModelNode::~ModelNode() {
 };
 
-void ModelNode::AddVertex( Vertex3f vertex ) {
-	this->vertices_.push_back( vertex );
+void ModelNode::addIndex( GLuint index ) {
+	// We only add the index if it's meaningful
+	if( index != VertexManager::INVALID_INDEX )
+		this->vertices_index_.push_back( index );
 };
 
-void ModelNode::compile() {
-	if( this->getDisplayListId() != -1 ) {
-		glDeleteLists( this->getDisplayListId(), 1 );
-	}
-	this->setDisplayListId( glGenLists( 1 ) );
-	glNewList( this->getDisplayListId(), GL_COMPILE );
+void ModelNode::render( float deltaT, FrameIndexBuffer *indices ) {
+	// First we adjust the transformation matrix to account for the object's movement
+	this->animate( deltaT );
 	
-	float *translation = this->getTranslation();
-	glTranslatef( translation[0], translation[1], translation[2] );
+	// Here we actually transform the vertices based on the matrix
+	// This only happens if we have something to adjust; if the matrix is the identity matrix that means there's no adjustment
+	if( !Matrix::isIdentity( this->getMatrix() ) ) {
+		// We create a set to keep track of the unique vertices
+		std::set<GLuint> current;
+		for( std::vector<GLuint>::iterator i = this->vertices_index_.begin(); i != this->vertices_index_.end(); ++i )
+			current.insert( *i );
 
-	float *rotation = this->getRotation();
-	glRotatef( rotation[0], 1.0, 0.0, 0.0 );
-	glRotatef( rotation[1], 0.0, 1.0, 0.0 );
-	glRotatef( rotation[2], 0.0, 0.0, 1.0 );
-	
-	glBegin( GL_TRIANGLES );
-	for( std::vector<Vertex3f>::iterator i = this->vertices_.begin(); i != this->vertices_.end(); ++i ) {
-		glColor3f( i->getR(), i->getG(), i->getB() );
-		glVertex3f( i->getX(), i->getY(), i->getZ() );
-	}
-	glEnd();
-
-	glEndList();
-};
-
-void ModelNode::render( float deltaT ) {
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
-
-	if( this->getDisplayListId() == -1 ) {
-		this->compile();
+		// We walk through each vertex and transform it
+		for( std::set<GLuint>::iterator i = current.begin(); i != current.end(); ++i )
+			VertexManager::instance()->transformVertex( (*i), this->getMatrix() );
+		// After we're done we reset the matrix to the identity matrix
+		Matrix::buildIdentity( this->getMatrix() );
 	}
 
-	glPushMatrix();
-	glCallList( this->getDisplayListId() );
-	glPopMatrix();
+	// And we add the indices to the list of vertices that need rendering
+	for( std::vector<GLuint>::iterator i = this->vertices_index_.begin(); i != this->vertices_index_.end(); ++i )
+		indices->addIndex( *i );
 }

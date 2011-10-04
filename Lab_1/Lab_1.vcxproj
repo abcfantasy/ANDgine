@@ -37,10 +37,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\SDL-1.2.14\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\glew-1.7.0\include;..\SDL-1.2.14\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\SDL-1.2.14\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\glew-1.7.0\lib;..\SDL-1.2.14\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -49,7 +49,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;opengl32.lib;glu32.lib;sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;opengl32.lib;glu32.lib;glew32.lib;sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -70,9 +70,15 @@
     <ClCompile Include="ContainerNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="FrameIndexBuffer.cpp">
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
     <ClCompile Include="Lab_1.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <ClCompile Include="ModelNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
@@ -83,12 +89,22 @@
     <ClCompile Include="Vertex3f.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="Vertex4f.cpp">
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <ClCompile Include="VertexManager.cpp">
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContainerNode.h" />
+    <ClInclude Include="FrameIndexBuffer.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModelNode.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="Vertex3f.h" />
+    <ClInclude Include="Vertex4f.h" />
+    <ClInclude Include="VertexManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

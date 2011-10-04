@@ -1,16 +1,15 @@
 #include <vector>
 #include "SDL.h"
-#include "SDL_opengl.h"
+#include "Matrix.h"
 #include "SceneNode.h"
 #include "ModelNode.h"
+#include "FrameIndexBuffer.h"
 #include "ContainerNode.h"
 
 ContainerNode::ContainerNode() {
-	this->setRotation( 0, 0, 0 );
-	this->setTranslation( 0, 0, 0 );
+	Matrix::buildIdentity( this->getMatrix() );
 	this->setVelocity( 0, 0, 0 );
 	this->setAngleVelocity( 0, 0, 0 );
-	this->setDisplayListId( -1 );
 };
 
 ContainerNode::~ContainerNode() {
@@ -19,52 +18,26 @@ ContainerNode::~ContainerNode() {
 	}
 };
 
-void ContainerNode::AddObject( SceneNode *object ) {
+void ContainerNode::addObject( SceneNode *object ) {
 	this->objects_.push_back( object );
-	if( object->getDisplayListId() == -1 )
-		object->compile();
 };
 
+void ContainerNode::render( float deltaT, FrameIndexBuffer *indices ) {
+	// First we adjust the transformation matrix to account for the object's movement
+	this->animate( deltaT );
 
-void ContainerNode::compile() {
-	if( this->getDisplayListId() != -1 ) {
-		glDeleteLists( this->getDisplayListId(), 1 );
-	}
-	this->setDisplayListId( glGenLists( 1 ) );
-	glNewList( this->getDisplayListId(), GL_COMPILE );
-	
-	float *translation = this->getTranslation();
-	glTranslatef( translation[0], translation[1], translation[2] );
-
-	float *rotation = this->getRotation();
-	glRotatef( rotation[0], 1.0, 0.0, 0.0 );
-	glRotatef( rotation[1], 0.0, 1.0, 0.0 );
-	glRotatef( rotation[2], 0.0, 0.0, 1.0 );
-
-
-	glEndList();
-
-	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i ) {
-		if( (*i)->getDisplayListId() == -1 )
-			(*i)->compile();
-	}
-};
-
-void ContainerNode::render( float deltaT ) {
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
-
-	if( this->getDisplayListId() == -1 ) {
-		this->compile();
+	// Here the transformation matrix propagates to the child objects
+	// This only happens if we have something to adjust; if the matrix is the identity matrix that means there's no adjustment
+	if( !Matrix::isIdentity( this->getMatrix() ) ) {
+		// We walk through each object and transform it
+		for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i )
+			Matrix::multiply( this->getMatrix(), (*i)->getMatrix() );
+		// After we're done we reset the matrix to the identity matrix
+		Matrix::buildIdentity( this->getMatrix() );
 	}
 
-	glPushMatrix();
-	
-	glCallList( this->getDisplayListId() );
+	// We render each of the contained objects
+	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i )
+		(*i)->render( deltaT, indices );
 
-	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i ) {
-		(*i)->render( deltaT );
-	}
-
-	glPopMatrix();
 };

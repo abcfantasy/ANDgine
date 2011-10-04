@@ -5,13 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "SDL.h"
-#include "SDL_opengl.h"
+#include "GL/glew.h"
 
 #include <vector>
 #include "Vertex3f.h"
 #include "SceneNode.h"
 #include "ModelNode.h"
 #include "ContainerNode.h"
+#include "VertexManager.h"
+#include "FrameIndexBuffer.h"
+#include "Matrix.h"
 
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
@@ -71,42 +74,50 @@ int initGL( GLvoid )
 	/* Really Nice Perspective Calculations */
 	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
+	glewInit();
+
 	return( TRUE );
 }
 
-float rpyramid = 0.0f;
 ContainerNode sceneGraph;
+FrameIndexBuffer frameIndexBuffer( 2048 );
 
 void initializeScene() {
+	GLuint top = VertexManager::instance()->addVertex( Vertex4f( 0.0f, 0.5f, 0.0f, 1.0f, 1.0, 0.0, 0.0 ) );
+	GLuint backleft = VertexManager::instance()->addVertex( Vertex4f( -0.5f,-0.5f, -0.5f, 1.0f, 0.0, 0.0, 1.0 ) );
+	GLuint backright = VertexManager::instance()->addVertex( Vertex4f( 0.5f, -0.5f, -0.5f, 1.0f, 0.0, 1.0, 0.0 ) );
+	GLuint frontleft = VertexManager::instance()->addVertex( Vertex4f( -0.5f, -0.5f, 0.5f, 1.0f, 0.0, 1.0, 0.0 ) );
+	GLuint frontright = VertexManager::instance()->addVertex( Vertex4f( 0.5f, -0.5f, 0.5f, 1.0f, 0.0, 0.0, 1.0 ) );
+	
 	ModelNode *pyramid = new ModelNode();
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0, 1.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0 ) );
-
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0, 1.0, 0.0 ) );
-
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0, 1.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f,-0.5f, -0.5f, 0.0, 0.0, 1.0 ) );
+	pyramid->addIndex( top );
+	pyramid->addIndex( frontleft );
+	pyramid->addIndex( frontright );
 	
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f,-0.5f, 0.0, 0.0, 1.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0, 1.0, 0.0 ) );
+	pyramid->addIndex( top );
+	pyramid->addIndex( frontright );
+	pyramid->addIndex( backright );
 
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f,-0.5f, 0.0f, 0.0f, 1.0f ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f ) );
+	pyramid->addIndex( top );
+	pyramid->addIndex( backright );
+	pyramid->addIndex( backleft );
 
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f ) );
+	pyramid->addIndex( top );
+	pyramid->addIndex( backleft );
+	pyramid->addIndex( frontleft );
 	
-	pyramid->setVelocity( 0.0f, 0.0f, 0.0f );
-	pyramid->setAngleVelocity( 0.0f, 90.0f, 0.0f );
+	pyramid->addIndex( frontleft );
+	pyramid->addIndex( backleft );
+	pyramid->addIndex( backright );
 
-	sceneGraph.AddObject( pyramid );
+	pyramid->addIndex( backright );
+	pyramid->addIndex( frontleft );
+	pyramid->addIndex( frontright );
+
+	pyramid->setVelocity( 0.3f, 0.0f, 0.0f );
+	pyramid->setAngleVelocity( 0.0f, 30.0f, 0.0f );
+
+	sceneGraph.addObject( pyramid );
 };
 
 /* Here goes our drawing code */
@@ -117,7 +128,10 @@ int drawGLScene( float deltaT )
 
 	/*HERE you should put your code in order to do render something on the screen, use lighting, modify the camera position etc... */
 	glLoadIdentity();
-	sceneGraph.render( deltaT );
+	
+	frameIndexBuffer.reset();
+	sceneGraph.render( deltaT, &frameIndexBuffer );
+	VertexManager::instance()->render( &frameIndexBuffer );
 
 	/* Draw it to the screen */
 	SDL_GL_SwapBuffers( );
