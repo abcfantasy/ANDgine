@@ -1,13 +1,8 @@
-#include <vector>
-#include <set>
-#include "SDL.h"
-#include "GL/glew.h"
-#include "Matrix.h"
-#include "SceneNode.h"
-#include "Vertex4f.h"
-#include "VertexManager.h"
-#include "FrameIndexBuffer.h"
 #include "ModelNode.h"
+#include <set>
+#include "Matrix.h"
+#include "LightingManager.h"
+#include "VertexManager.h"
 
 ModelNode::ModelNode() {
 	Matrix::buildIdentity( this->getMatrix() );
@@ -47,3 +42,32 @@ void ModelNode::render( float deltaT, FrameIndexBuffer *indices ) {
 	for( std::vector<GLuint>::iterator i = this->vertices_index_.begin(); i != this->vertices_index_.end(); ++i )
 		indices->addIndex( *i );
 }
+
+void ModelNode::replaceNormal( GLuint *index, Vertex4f *vertex, Vertex4f *normal ) {
+	if( vertex->hasNormal() ) {
+		Vertex4f tempVertex = *vertex;
+		tempVertex.setNormal( normal->getX(), normal->getY(), normal->getZ() );
+		*index = VertexManager::instance()->addVertex( tempVertex );
+	} else {
+		vertex->setNormal( normal->getX(), normal->getY(), normal->getZ() );
+	};
+};
+
+
+void ModelNode::normalizeFace() {
+	int vertexCount = this->vertices_index_.size();
+	this->normalizeFace( &this->vertices_index_[vertexCount-3], &this->vertices_index_[vertexCount-2], &this->vertices_index_[vertexCount-1] );
+};
+
+void ModelNode::normalizeFace( GLuint *a, GLuint *b, GLuint *c ) {
+	Vertex4f normal;
+	Vertex4f *v1 = VertexManager::instance()->getVertex( *a );
+	Vertex4f *v2 = VertexManager::instance()->getVertex( *b );
+	Vertex4f *v3 = VertexManager::instance()->getVertex( *c );
+	
+	LightingManager::calculateNormal( v1, v2, v3, &normal );
+
+	this->replaceNormal( a, v1, &normal );
+	this->replaceNormal( b, v2, &normal );
+	this->replaceNormal( c, v3, &normal );
+};

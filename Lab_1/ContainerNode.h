@@ -1,8 +1,12 @@
 #ifndef _CONTAINERNODE_H_
 #define _CONTAINERNODE_H_
 
-// Class that contains other SceneNode objects
+#include <vector>
+#include "SceneNode.h"
 
+class FrameIndexBuffer;
+
+// Class that contains other SceneNode objects
 class ContainerNode : public SceneNode {
 private:
 	// The list of objects it contains

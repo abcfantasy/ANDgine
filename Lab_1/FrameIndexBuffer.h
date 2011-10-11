@@ -1,7 +1,6 @@
 #ifndef _FRAMEINDEXBUFFER_H_
 #define _FRAMEINDEXBUFFER_H_
 
-// TODO: Figure out why it doesn't work if this include isn't here
 #include "GL/glew.h"
 
 // Class that collects the indices of the vertices that will be rendered in each frame

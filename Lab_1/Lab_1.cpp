@@ -7,14 +7,9 @@
 #include "SDL.h"
 #include "GL/glew.h"
 
-#include <vector>
-#include "Vertex3f.h"
-#include "SceneNode.h"
-#include "ModelNode.h"
-#include "ContainerNode.h"
-#include "VertexManager.h"
-#include "FrameIndexBuffer.h"
-#include "Matrix.h"
+#include "InputManager.h"
+#include "SceneManager.h"
+#include "LightingManager.h"
 
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
@@ -74,70 +69,48 @@ int initGL( GLvoid )
 	/* Really Nice Perspective Calculations */
 	glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
+	/* Enable lighting */
+	glEnable(GL_LIGHTING);
+	// enable color tracking
+	glEnable(GL_COLOR_MATERIAL);
+	// set material properties which will be assigned by glColor
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
 	glewInit();
 
 	return( TRUE );
 }
 
-ContainerNode sceneGraph;
-FrameIndexBuffer frameIndexBuffer( 2048 );
-
-void initializeScene() {
-	GLuint top = VertexManager::instance()->addVertex( Vertex4f( 0.0f, 0.5f, 0.0f, 1.0f, 1.0, 0.0, 0.0 ) );
-	GLuint backleft = VertexManager::instance()->addVertex( Vertex4f( -0.5f,-0.5f, -0.5f, 1.0f, 0.0, 0.0, 1.0 ) );
-	GLuint backright = VertexManager::instance()->addVertex( Vertex4f( 0.5f, -0.5f, -0.5f, 1.0f, 0.0, 1.0, 0.0 ) );
-	GLuint frontleft = VertexManager::instance()->addVertex( Vertex4f( -0.5f, -0.5f, 0.5f, 1.0f, 0.0, 1.0, 0.0 ) );
-	GLuint frontright = VertexManager::instance()->addVertex( Vertex4f( 0.5f, -0.5f, 0.5f, 1.0f, 0.0, 0.0, 1.0 ) );
-	
-	ModelNode *pyramid = new ModelNode();
-	pyramid->addIndex( top );
-	pyramid->addIndex( frontleft );
-	pyramid->addIndex( frontright );
-	
-	pyramid->addIndex( top );
-	pyramid->addIndex( frontright );
-	pyramid->addIndex( backright );
-
-	pyramid->addIndex( top );
-	pyramid->addIndex( backright );
-	pyramid->addIndex( backleft );
-
-	pyramid->addIndex( top );
-	pyramid->addIndex( backleft );
-	pyramid->addIndex( frontleft );
-	
-	pyramid->addIndex( frontleft );
-	pyramid->addIndex( backleft );
-	pyramid->addIndex( backright );
-
-	pyramid->addIndex( backright );
-	pyramid->addIndex( frontleft );
-	pyramid->addIndex( frontright );
-
-	pyramid->setVelocity( 0.3f, 0.0f, 0.0f );
-	pyramid->setAngleVelocity( 0.0f, 30.0f, 0.0f );
-
-	sceneGraph.addObject( pyramid );
-};
-
-/* Here goes our drawing code */
-int drawGLScene( float deltaT )
+void KeyDown( SDLKey key, SDLMod mod )
 {
-	/* Clear The Screen And The Depth Buffer */
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	/*HERE you should put your code in order to do render something on the screen, use lighting, modify the camera position etc... */
-	glLoadIdentity();
-	
-	frameIndexBuffer.reset();
-	sceneGraph.render( deltaT, &frameIndexBuffer );
-	VertexManager::instance()->render( &frameIndexBuffer );
-
-	/* Draw it to the screen */
-	SDL_GL_SwapBuffers( );
-
-	return( TRUE );
+	// one option is to check the key here and handle result
+	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
+	if ( key == SDLK_RIGHT )
+		SceneManager::instance()->getSceneGraph()->setVelocity( 5.0f, 0.0f, 0.0f );
+	if ( key == SDLK_LEFT )
+		SceneManager::instance()->getSceneGraph()->setVelocity( -5.0f, 0.0f, 0.0f );
+	if ( key == SDLK_UP )
+		SceneManager::instance()->getSceneGraph()->setVelocity( 0.0f, 5.0f, 0.0f );
+	if ( key == SDLK_DOWN )
+		SceneManager::instance()->getSceneGraph()->setVelocity( 0.0f, -5.0f, 0.0f );
 }
+
+void KeyUp( SDLKey key, SDLMod mod )
+{
+	SceneManager::instance()->getSceneGraph()->setVelocity( 0.0f, 0.0f, 0.0f );
+}
+
+void initializeManagers() {
+	SceneManager::instance()->initializeScene();
+	InputManager::instance()->addKeyDownEvent( &KeyDown );
+	InputManager::instance()->addKeyUpEvent( &KeyUp );
+
+	GLfloat ambientLight[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	GLfloat diffuseLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
+	GLfloat specularLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
+	GLfloat position[] = { -5.0f, -5.0f, -5.0f, 1.0f };
+	LightingManager::instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
+};
 
 int main( int argc, char **argv )
 {
@@ -149,10 +122,6 @@ int main( int argc, char **argv )
 	SDL_Event event;
 	/* this holds some info about our display */
 	const SDL_VideoInfo *videoInfo;
-
-	int timeLastFrame = 0;
-	int timeThisFrame;
-
 
 	/* initialize SDL */
 	if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -203,13 +172,13 @@ int main( int argc, char **argv )
 	}
 
 	/* initialize OpenGL */
-	initGL( );
+	initGL();
 
 	/* resize the initial window */
 	resizeWindow( SCREEN_WIDTH, SCREEN_HEIGHT );
 
-	/* initializing scene */
-	initializeScene();
+	/* initialize the Manager objects */
+	initializeManagers();
 
 	/* wait for events */ 
 	while ( !done )
@@ -218,6 +187,7 @@ int main( int argc, char **argv )
 
 		while ( SDL_PollEvent( &event ) )
 		{
+			InputManager::instance()->handle(&event);
 			switch( event.type )
 			{
 			  
@@ -243,10 +213,8 @@ int main( int argc, char **argv )
 			}
 		}
 
-		timeThisFrame = SDL_GetTicks();
 		/* draw the scene */
-		drawGLScene( float(timeThisFrame - timeLastFrame) );
-		timeLastFrame = timeThisFrame;
+		SceneManager::instance()->renderScene();
 	}
 
 	/* clean ourselves up and exit */

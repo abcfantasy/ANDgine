@@ -1,6 +1,10 @@
 #ifndef _VERTEXMANAGER_H_
 #define _VERTEXMANAGER_H_
 
+#include "GL/glew.h"
+#include "Vertex4f.h"
+#include "FrameIndexBuffer.h"
+
 // Singleton class that contains all the vertices that will be used
 // It also contains the Vertex Array code
 // It's basically a Stack Allocator for vertices
@@ -29,6 +33,9 @@ public:
 	// Getters for the Ids
 	inline GLuint getVertexBuffer() { return this->vertexBuffer_; };
 	inline GLuint getColorBuffer() { return this->colorBuffer_; };
+
+	// Get a vertex by index
+	Vertex4f* getVertex( GLuint index );
 
 	// Adds a vertex to the stack and returns its index
 	GLuint addVertex( Vertex4f vertex );

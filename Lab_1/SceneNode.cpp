@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Matrix.h"
-#include "FrameIndexBuffer.h"
 #include "SceneNode.h"
 
 void SceneNode::setVelocity( float x, float y, float z ) {

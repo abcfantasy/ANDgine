@@ -20,6 +20,16 @@ Vertex3f::Vertex3f( float x, float y, float z ) {
 	this->b_ = 1.0;
 };
 
+Vertex3f::Vertex3f( float x, float y, float z, float u, float v ) {
+	this->x_ = x;
+	this->y_ = y;
+	this->z_ = z;
+
+	this->u_ = u;
+	this->v_ = v;
+	this->b_ = 0.0f;
+};
+
 Vertex3f::Vertex3f( float x, float y, float z, float r, float g, float b ) {
 	this->x_ = x;
 	this->y_ = y;

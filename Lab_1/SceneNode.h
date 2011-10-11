@@ -1,11 +1,10 @@
 #ifndef _SCENENODE_H_
 #define _SCENENODE_H_
 
-// TODO: Figure out why it doesn't work if this include isn't here
-#include "FrameIndexBuffer.h"
-
 // Base class for the objects in the scene graph
 // Derived classes are ContainerNode, which contains other objects, and ModelNode, which contains model information
+
+class FrameIndexBuffer;
 
 class SceneNode {
 private:

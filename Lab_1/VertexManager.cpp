@@ -1,9 +1,5 @@
-#include "Matrix.h"
-#include "SDL.h"
-#include "GL/glew.h"
-#include "Vertex4f.h"
-#include "FrameIndexBuffer.h"
 #include "VertexManager.h"
+#include "Matrix.h"
 
 VertexManager::VertexManager() {
 	this->top_ = 0;
@@ -33,6 +29,10 @@ GLuint VertexManager::addVertex( Vertex4f vertex ) {
 	return top_ - 1;
 };
 
+Vertex4f* VertexManager::getVertex( GLuint index ) {
+	return &this->vertices_[ index ];
+};
+
 void VertexManager::transformVertex( const GLuint index, const float matrix[16] ) {
 	// We get the vertex from the specified index
 	// And we put its coordinates in an array
@@ -47,26 +47,39 @@ void VertexManager::transformVertex( const GLuint index, const float matrix[16] 
 	Matrix::multiplyVector( matrix, coords );
 
 	// And then we set the coordinates back into the class instance
-	v->setX( coords[0] );
-	v->setY( coords[1] );
-	v->setZ( coords[2] );
-	v->setW( coords[3] );
+	v->setPosition( coords );
+
+	coords[0] = v->getNX();
+	coords[1] = v->getNY();
+	coords[2] = v->getNZ();
+	coords[3] = 1.0f;
+
+	Matrix::multiplyVector( matrix, coords );
+
+	v->setNormal( coords );
 };
 
 void VertexManager::render( FrameIndexBuffer *indices ) {	
 	glEnableClientState( GL_COLOR_ARRAY );
 	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_NORMAL_ARRAY );
 	
 	// Using interleaved arrays
 	// The vertices have 4 coordinates; their type is float; the structure is Vertex4f so we use that size as a stride; the pointer is the pointer to the Vertex4f array
 	glVertexPointer( 4, GL_FLOAT, sizeof( Vertex4f ), this->vertices_ );
+
+//	glNormalPointer( GL_FLOAT, sizeof( Vertex4f ), this->vertices_ );
+
+	glNormalPointer( GL_FLOAT, sizeof( Vertex4f ), &(((float*)this->vertices_)[4]) );
+
 	// The colors have 3 components; their type is float; the structure is Vertex4f so we use that size as a stride;
 	// the pointer is modified to point to the start of the color data: 4 floats after the start of the structure
-	glColorPointer( 3, GL_FLOAT, sizeof( Vertex4f ), &(((float*)this->vertices_)[4]) );
+	glColorPointer( 3, GL_FLOAT, sizeof( Vertex4f ), &(((float*)this->vertices_)[7]) );
 	
 	// And finally we draw the vertices according to their indices
 	glDrawElements( GL_TRIANGLES, indices->getCount(), GL_UNSIGNED_INT, indices->getIndices() );
 
+	glDisableClientState( GL_NORMAL_ARRAY );
 	glDisableClientState( GL_VERTEX_ARRAY );
 	glDisableClientState( GL_COLOR_ARRAY );
 };

@@ -1,10 +1,5 @@
-#include <vector>
-#include "SDL.h"
-#include "Matrix.h"
-#include "SceneNode.h"
-#include "ModelNode.h"
-#include "FrameIndexBuffer.h"
 #include "ContainerNode.h"
+#include "Matrix.h"
 
 ContainerNode::ContainerNode() {
 	Matrix::buildIdentity( this->getMatrix() );
@@ -12,7 +7,7 @@ ContainerNode::ContainerNode() {
 	this->setAngleVelocity( 0, 0, 0 );
 };
 
-ContainerNode::~ContainerNode() {
+ContainerNode::~ContainerNode() {	
 	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i ) {
 		delete (*i);
 	}
