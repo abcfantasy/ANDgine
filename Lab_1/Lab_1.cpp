@@ -66,7 +66,7 @@ int initGL( GLvoid )
 	/* Enable lighting and color material */
 	LightingManager::Instance()->initializeColorMaterialLighting();
 	
-	handle = TextureResourceManager.addResource( "C:\\Users\\Andrew Borg Cardona\\Pictures\\stone54.jpg" ); 
+	handle = TextureResourceManager.addResource( "stone54.jpg" ); 
 	
 	glEnable( GL_TEXTURE_2D );
 

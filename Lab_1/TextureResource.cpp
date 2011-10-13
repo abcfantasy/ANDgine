@@ -3,8 +3,8 @@
 #include <olectl.h>											// Header File For The OLE Controls Library
 
 
-TextureResource::TextureResource(const int handle, char* szFullPath )
-		:Resource(handle, szFullPath)
+TextureResource::TextureResource(const int handle, char* szFileName )
+		:Resource(handle, szFileName)
 {
 	// default to alpha matching BLACK
 	SetAlphaMatch(TRUE, 0, 0, 0);										// Set the Alpha Matching State
@@ -19,7 +19,7 @@ TextureResource::TextureResource(const int handle, char* szFullPath )
 	SetTextureFilter(txNoFilter);
 
 	// load from disk
-	//char szFullPath[MAX_PATH+1];										// Full Path To Picture
+	char szFullPath[MAX_PATH+1];										// Full Path To Picture
 	char szExtension[16];												// Extenstion of Picture
 
 	pglTexture = new glTexture();
@@ -29,9 +29,9 @@ TextureResource::TextureResource(const int handle, char* szFullPath )
 	//}
 	//else																// Otherwise... We Are Loading From A File
 	//{
-	//	GetCurrentDirectory(MAX_PATH, szFullPath);						// Get Our Working Directory
-	//	strcat(szFullPath, "\\");										// Append "\" After The Working Directory
-	//	strcat(szFullPath, szFileName);									// Append The PathName
+		GetCurrentDirectory(MAX_PATH, szFullPath);						// Get Our Working Directory
+		strcat(szFullPath, "\\");										// Append "\" After The Working Directory
+		strcat(szFullPath, szFileName);									// Append The PathName
 	//}
 
 	ExtensionFromFilename(szFullPath, szExtension);
