@@ -5,8 +5,12 @@
 class ModelNode : public SceneNode {
 private:
 	std::vector<Vertex3f> vertices_;
+	int textureHandle;
+
+	void Initialize();
 public:
 	ModelNode();
+	ModelNode( int texture );
 	~ModelNode();
 
 	void AddVertex( Vertex3f vertex );

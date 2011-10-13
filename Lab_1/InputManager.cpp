@@ -1,6 +1,17 @@
 #include "SDL.h"
 #include "InputManager.h"
 
+InputManager* InputManager::instance_ = NULL;
+
+/* get the singleton instance */
+InputManager* InputManager::Instance()
+{
+	if ( instance_ == NULL )
+		instance_ = new InputManager();
+
+	return instance_;
+}
+
 /* constructor */
 InputManager::InputManager(void)
 {

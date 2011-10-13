@@ -13,6 +13,11 @@
 #include "ModelNode.h"
 #include "ContainerNode.h"
 
+#include "InputManager.h"
+#include "LightingManager.h"
+#include "ResourcesManager.h"
+#include "TextureResource.h"
+
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
 #define SCREEN_HEIGHT 480
@@ -25,6 +30,8 @@
 /* This is our SDL surface */
 SDL_Surface *surface;
 
+ResourcesManager<TextureResource> TextureResourceManager;
+int handle;
 /* function to release/destroy our resources and restoring the old desktop */
 void Quit( int returnCode )
 {
@@ -55,6 +62,13 @@ int initGL( GLvoid )
 
 	/* Enable smooth shading */
 	glShadeModel( GL_SMOOTH );
+	
+	/* Enable lighting and color material */
+	LightingManager::Instance()->initializeColorMaterialLighting();
+	
+	handle = TextureResourceManager.addResource( "C:\\Users\\Andrew Borg Cardona\\Pictures\\stone54.jpg" ); 
+	
+	glEnable( GL_TEXTURE_2D );
 
 	/* Set the background Color*/
 	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -78,33 +92,79 @@ float rpyramid = 0.0f;
 ContainerNode sceneGraph;
 
 void initializeScene() {
-	ModelNode *pyramid = new ModelNode();
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0, 1.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0 ) );
+	ModelNode *pyramid = new ModelNode( TextureResourceManager.getElement( handle )->getTexture()->TextureID );
 
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0, 1.0, 0.0 ) );
 
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0, 1.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f,-0.5f, -0.5f, 0.0, 0.0, 1.0 ) );
-	
-	pyramid->AddVertex( Vertex3f( 0.0f, 0.5f, 0.0f, 1.0, 0.0, 0.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f,-0.5f, 0.0, 0.0, 1.0 ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0, 1.0, 0.0 ) );
+	// front face
+	pyramid->AddVertex( Vertex3f(		// bottom left (green)
+		-0.5f, -0.5f, 0.5f,				// position
+		0.0f, 1.0f, 0.0f,				// color
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f ) );			// normal
+	pyramid->AddVertex( Vertex3f( 
+		0.5f, -0.5f, 0.5f, 
+		0.0f, 0.0f, 1.0f, 
+		0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f ) );		// bottom right (blue)
+	pyramid->AddVertex( Vertex3f( 
+		0.0f, 0.5f, 0.0f, 
+		1.0f, 0.0f, 0.0f, 
+		0.0f, 1.0f, 1.0f,
+		0.5f, 1.0f) );		// top (red)
 
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f,-0.5f, 0.0f, 0.0f, 1.0f ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f ) );
+	// right face
+	pyramid->AddVertex( Vertex3f( 
+		0.5f, -0.5f, 0.5f, 
+		0.0f, 0.0f, 1.0f, 
+		1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f ) );		// bottom left (blue)
+	pyramid->AddVertex( Vertex3f(
+		0.5f, -0.5f, -0.5f, 
+		0.0f, 1.0f, 0.0f, 
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f ) );		// bottom right (green)
+	pyramid->AddVertex( Vertex3f( 
+		0.0f, 0.5f, 0.0f, 
+		1.0f, 0.0f, 0.0f, 
+		1.0f, 1.0f, 0.0f,
+		0.5f, 1.0f ) );		// top (red)
 
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f ) );
-	pyramid->AddVertex( Vertex3f( -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f ) );
-	pyramid->AddVertex( Vertex3f( 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f ) );
+	// back face
+	pyramid->AddVertex( Vertex3f( 
+		0.5f, -0.5f, -0.5f, 
+		0.0f, 1.0f, 0.0f, 
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f ) );		// bottom left (green)
+	pyramid->AddVertex( Vertex3f( 
+		-0.5f, -0.5f, -0.5f, 
+		0.0f, 0.0f, 1.0f, 
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f) );	// bottom right (blue)
+	pyramid->AddVertex( Vertex3f( 
+		0.0f, 0.5f, 0.0f, 
+		1.0f, 0.0f, 0.0f, 
+		0.0f, 1.0f, -1.0f,
+		0.5f, 1.0f) );		// top (red)
+
+	// left face
+	pyramid->AddVertex( Vertex3f( 
+		-0.5f, -0.5f, -0.5f,
+		0.0f, 0.0f, 1.0f, 
+		-1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f ) );	// bottom left (blue)
+	pyramid->AddVertex( Vertex3f( 
+		-0.5f, -0.5f, 0.5f, 
+		0.0f, 1.0f, 0.0f, 
+		-1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f) );		// bottom right (green)
+	pyramid->AddVertex( Vertex3f( 
+		0.0f, 0.5f, 0.0f, 
+		1.0f, 0.0f, 0.0f, 
+		-1.0f, 1.0f, 0.0f,
+		0.5f, 1.0f) );		// top (red)
 	
 	pyramid->setVelocity( 0.0f, 0.0f, 0.0f );
-	pyramid->setAngleVelocity( 0.0f, 90.0f, 0.0f );
+	pyramid->setAngleVelocity( 0.0f, 40.0f, 0.0f );
 
 	sceneGraph.AddObject( pyramid );
 };
@@ -117,7 +177,28 @@ int drawGLScene( float deltaT )
 
 	/*HERE you should put your code in order to do render something on the screen, use lighting, modify the camera position etc... */
 	glLoadIdentity();
+	
 	sceneGraph.render( deltaT );
+
+	glLoadIdentity();
+	//GLfloat lightColor0[] = {0.9f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
+    //GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+    //glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+
+	GLfloat ambientLight[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	GLfloat diffuseLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
+	GLfloat specularLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
+	GLfloat position[] = { -5.0f, -5.0f, -5.0f, 1.0f };
+	LightingManager::Instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
+	
+	//glLoadIdentity();
+	//glPushMatrix();
+	//GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	//GLfloat position[] = { 5.0f, 0.0f, 0.0f, 1.0f };
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	//glLightfv(GL_LIGHT0, GL_POSITION, position);
+	//glPopMatrix();
 
 	/* Draw it to the screen */
 	SDL_GL_SwapBuffers( );
@@ -125,8 +206,31 @@ int drawGLScene( float deltaT )
 	return( TRUE );
 }
 
-int main( int argc, char **argv )
+
+void KeyDown( SDLKey key, SDLMod mod )
 {
+	// one option is to check the key here and handle result
+	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
+	if ( key == SDLK_RIGHT )
+		sceneGraph.setVelocity( 0.0f, 5.0f, 0.0f );
+	if ( key == SDLK_LEFT )
+		sceneGraph.setVelocity( 0.0f, -5.0f, 0.0f );
+	if ( key == SDLK_UP )
+		sceneGraph.setVelocity( 5.0f, 0.0f, 0.0f );
+	if ( key == SDLK_DOWN )
+		sceneGraph.setVelocity( -5.0f, 0.0f, 0.0f );
+}
+
+void KeyUp( SDLKey key, SDLMod mod )
+{
+	sceneGraph.setVelocity( 0.0f, 0.0f, 0.0f );
+}
+
+int main( int argc, char **argv )
+{	
+	InputManager::Instance()->addKeyDownEvent( &KeyDown );
+	InputManager::Instance()->addKeyUpEvent( &KeyUp );
+	
 	/* Flags to pass to SDL_SetVideoMode */
 	int videoFlags;
 	/* main loop variable */
@@ -190,12 +294,19 @@ int main( int argc, char **argv )
 
 	/* initialize OpenGL */
 	initGL( );
-
+	
 	/* resize the initial window */
 	resizeWindow( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 	/* initializing scene */
 	initializeScene();
+
+	//
+	//GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	//GLfloat diffuseLight[] = { 0.5f, 0.5f, 0.5f, 0.0f };
+	//GLfloat specularLight[] = { 0.8f, 0.8f, 0.0f, 0.0f };
+	//GLfloat position[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	//lightingManager->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
 
 	/* wait for events */ 
 	while ( !done )
@@ -204,6 +315,7 @@ int main( int argc, char **argv )
 
 		while ( SDL_PollEvent( &event ) )
 		{
+			InputManager::Instance()->handle(&event);
 			switch( event.type )
 			{
 			  

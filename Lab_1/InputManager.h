@@ -7,7 +7,7 @@ typedef void (*MouseButtonCallback)( Uint16, Uint16, Uint8, Uint8 );			// x, y, 
 
 /*	InputManager
  *
- *	Class that handles input. 
+ *	Singleton class that handles input.
  *
  *	For polling, use getKeys() and getMouseButtons() to get an array of booleans representing
  *	the state of the mouse buttons or keys (true if pressed, false otherwise).
@@ -19,6 +19,8 @@ typedef void (*MouseButtonCallback)( Uint16, Uint16, Uint8, Uint8 );			// x, y, 
 class InputManager
 {
 private:
+	static InputManager *instance_;
+
 	// polling variables
 	bool keys_[322];		// 322 to handle enough keys on the keyboard
 	bool mouseButtons_[8];	// handles all mouse buttons incl. wheel
@@ -32,17 +34,23 @@ private:
 	MouseButtonCallback onMouseDown_;
 	MouseButtonCallback onMouseUp_;
 
-public:
+protected:
 	InputManager(void);
+
+public:
 	//~InputManager(void);
+	
+	// singleton
+	static InputManager* Instance();
+
+	// handle input
+	void handle(SDL_Event* Event);
 
 	// used for polling
 	inline bool* getKeys() { return this->keys_; }
 	inline bool* getMouseButtons() { return this->mouseButtons_; }
 	inline Uint16 getLastMouseX() { return this->lastMouseX; }
 	inline Uint16 getLastMouseY() { return this->lastMouseY; }
-
-	void handle(SDL_Event* Event);
 
 	// events
 	void addKeyDownEvent( KeyCallback OnKeyDown );
