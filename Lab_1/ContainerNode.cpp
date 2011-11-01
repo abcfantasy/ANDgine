@@ -1,16 +1,14 @@
-#include <vector>
+#include "ContainerNode.h"
+
 #include "SDL.h"
 #include "SDL_opengl.h"
-#include "SceneNode.h"
-#include "ModelNode.h"
-#include "ContainerNode.h"
 
 ContainerNode::ContainerNode() {
 	this->setRotation( 0, 0, 0 );
-	this->setTranslation( 0, 0, 0 );
+	this->setPosition( 0, 0, 0 );
 	this->setVelocity( 0, 0, 0 );
 	this->setAngleVelocity( 0, 0, 0 );
-	this->setDisplayListId( -1 );
+	this->displayListId_ = SceneNode::INVALID_HANDLE;
 };
 
 ContainerNode::~ContainerNode() {
@@ -19,48 +17,35 @@ ContainerNode::~ContainerNode() {
 	}
 };
 
-void ContainerNode::AddObject( SceneNode *object ) {
+void ContainerNode::addObject( SceneNode *object ) {
 	this->objects_.push_back( object );
-	if( object->getDisplayListId() == -1 )
+	if( object->getDisplayListId() == SceneNode::INVALID_HANDLE )
 		object->compile();
 };
 
-
 void ContainerNode::compile() {
-	if( this->getDisplayListId() != -1 ) {
-		glDeleteLists( this->getDisplayListId(), 1 );
+	if( this->displayListId_ != SceneNode::INVALID_HANDLE ) {
+		glDeleteLists( this->displayListId_, 1 );
 	}
-	this->setDisplayListId( glGenLists( 1 ) );
+	this->displayListId_ = glGenLists( 1 );
 	glNewList( this->getDisplayListId(), GL_COMPILE );
 	
-	float *translation = this->getTranslation();
-	glTranslatef( translation[0], translation[1], translation[2] );
-
-	float *rotation = this->getRotation();
-	glRotatef( rotation[0], 1.0, 0.0, 0.0 );
-	glRotatef( rotation[1], 0.0, 1.0, 0.0 );
-	glRotatef( rotation[2], 0.0, 0.0, 1.0 );
-
+	glTranslatef( this->position_[0], this->position_[1], this->position_[2] );
+	glRotatef( this->rotation_[0], 1.0, 0.0, 0.0 );
+	glRotatef( this->rotation_[1], 0.0, 1.0, 0.0 );
+	glRotatef( this->rotation_[2], 0.0, 0.0, 1.0 );
 
 	glEndList();
-
-	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i ) {
-		if( (*i)->getDisplayListId() == -1 )
-			(*i)->compile();
-	}
 };
 
 void ContainerNode::render( float deltaT ) {
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
+	this->translate( this->velocity_, deltaT );
+	this->rotate( this->angle_velocity_, deltaT );
 
-	if( this->getDisplayListId() == -1 ) {
-		this->compile();
-	}
+	if( this->displayListId_ == SceneNode::INVALID_HANDLE )	this->compile();
 
 	glPushMatrix();
-	
-	glCallList( this->getDisplayListId() );
+	glCallList( this->displayListId_ );
 
 	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i ) {
 		(*i)->render( deltaT );

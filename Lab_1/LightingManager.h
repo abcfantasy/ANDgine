@@ -1,6 +1,9 @@
 #ifndef _LIGHTINGMANAGER_H_
 #define _LIGHTINGMANAGER_H_
 
+#include "SDL.h"
+#include "SDL_opengl.h"
+
 /*
  * Lighting Manager
  *
@@ -10,10 +13,6 @@
  */
 class LightingManager
 {
-
-private:
-	static LightingManager *instance_;
-
 protected:
 	LightingManager(void);
 
@@ -21,7 +20,7 @@ public:
 	//~LightingManager(void);
 
 	// singleton
-	static LightingManager* Instance();
+	static LightingManager* instance();
 
 	/* use the below functions only within the initialization of OpenGL */
 	void initializeColorMaterialLighting(void);

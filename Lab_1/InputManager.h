@@ -1,6 +1,8 @@
 #ifndef _INPUTMANAGER_H_
 #define _INPUTMANAGER_H_
 
+#include "SDL.h"
+
 typedef void (*KeyCallback)( SDLKey, SDLMod );									// key, mod
 typedef void (*MouseMoveCallback)( Uint16, Uint16, Sint16, Sint16, Uint8 );		// x, y, relx, rely, state
 typedef void (*MouseButtonCallback)( Uint16, Uint16, Uint8, Uint8 );			// x, y, button, state
@@ -19,8 +21,6 @@ typedef void (*MouseButtonCallback)( Uint16, Uint16, Uint8, Uint8 );			// x, y, 
 class InputManager
 {
 private:
-	static InputManager *instance_;
-
 	// polling variables
 	bool keys_[322];		// 322 to handle enough keys on the keyboard
 	bool mouseButtons_[8];	// handles all mouse buttons incl. wheel
@@ -41,7 +41,7 @@ public:
 	//~InputManager(void);
 	
 	// singleton
-	static InputManager* Instance();
+	static InputManager* instance();
 
 	// handle input
 	void handle(SDL_Event* Event);

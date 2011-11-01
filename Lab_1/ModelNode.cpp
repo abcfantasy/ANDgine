@@ -1,9 +1,7 @@
-#include <vector>
+#include "ModelNode.h"
+
 #include "SDL.h"
 #include "SDL_opengl.h"
-#include "SceneNode.h"
-#include "Vertex3f.h"
-#include "ModelNode.h"
 
 ModelNode::ModelNode() {
 	this->Initialize();
@@ -20,7 +18,7 @@ ModelNode::~ModelNode() {
 
 void ModelNode::Initialize() {
 	this->setRotation( 0, 0, 0 );
-	this->setTranslation( 0, 0, 0 );
+	this->setPosition( 0, 0, 0 );
 	this->setVelocity( 0, 0, 0 );
 	this->setAngleVelocity( 0, 0, 0 );
 	this->setDisplayListId( -1 );
@@ -37,8 +35,8 @@ void ModelNode::compile() {
 	this->setDisplayListId( glGenLists( 1 ) );
 	glNewList( this->getDisplayListId(), GL_COMPILE );
 	
-	float *translation = this->getTranslation();
-	glTranslatef( translation[0], translation[1], translation[2] );
+	float *position = this->getPosition();
+	glTranslatef( position[0], position[1], position[2] );
 
 	float *rotation = this->getRotation();
 	glRotatef( rotation[0], 1.0, 0.0, 0.0 );

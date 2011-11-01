@@ -1,7 +1,7 @@
 #ifndef _TEXTURERESOURCE_H_
 #define _TEXTURERESOURCE_H_
 
-#include "resource.h"
+#include "Resource.h"
 #include <string>
 #include "SDL_opengl.h"
 

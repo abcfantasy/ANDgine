@@ -4,7 +4,7 @@
 
 
 TextureResource::TextureResource(const int handle, char* szFileName )
-		:Resource(handle, szFileName)
+		: Resource(handle, szFileName)
 {
 	// default to alpha matching BLACK
 	SetAlphaMatch(TRUE, 0, 0, 0);										// Set the Alpha Matching State

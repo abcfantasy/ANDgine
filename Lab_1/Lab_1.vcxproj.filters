@@ -13,36 +13,99 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{97e29509-81d2-4af9-a6d8-403ebd63af2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{219bfbff-557a-4775-8574-4317200a4eb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{ff2356fa-20aa-49d1-ac85-d142443dc027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{edf695ef-401e-4d10-b92f-79a49f4df0f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game Entities">
+      <UniqueIdentifier>{1f09b810-4965-432c-9257-14efd36da749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scene Graph">
+      <UniqueIdentifier>{67e2edc2-2c79-44bd-b96c-3054b7b4337b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scene Graph">
+      <UniqueIdentifier>{c1d58706-560f-40ea-8d94-b18185fe6788}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Lab_1.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="ModelNode.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LightingManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="ContainerNode.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureResource.cpp">
+      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Vertex3f.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ContainerNode.cpp">
+      <Filter>Source Files\Scene Graph</Filter>
     </ClCompile>
     <ClCompile Include="SceneNode.cpp">
+      <Filter>Source Files\Scene Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectNode.cpp">
+      <Filter>Source Files\Scene Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ContainerNode.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="ModelNode.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="SceneNode.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LightingManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureResource.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Vertex3f.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ContainerNode.h">
+      <Filter>Header Files\Scene Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneNode.h">
+      <Filter>Header Files\Scene Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectNode.h">
+      <Filter>Header Files\Scene Graph</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\Game Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\Game Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

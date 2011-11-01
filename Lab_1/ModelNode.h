@@ -1,7 +1,10 @@
 #ifndef _MODELNODE_H_
 #define _MODELNODE_H_
 
+#include <vector>
+#include "SceneNode.h"
 #include "Vertex3f.h"
+
 class ModelNode : public SceneNode {
 private:
 	std::vector<Vertex3f> vertices_;

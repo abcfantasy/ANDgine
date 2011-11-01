@@ -1,20 +1,15 @@
-#include "SDL.h"
-#include "SDL_opengl.h"
-#include "Vertex3f.h"
 #include "LightingManager.h"
 
-LightingManager* LightingManager::instance_ = NULL;
+#include "Vertex3f.h"
 
 /*
  * <summary>Gets the singleton instane</summary>
  * <returns>The instance of LightingManager</returns>
  */
-LightingManager* LightingManager::Instance()
+LightingManager* LightingManager::instance()
 {
-	if ( instance_ == NULL )
-		instance_ = new LightingManager();
-
-	return instance_;
+	static LightingManager lm;
+	return &lm;
 }
 
 /*

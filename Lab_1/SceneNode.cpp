@@ -12,16 +12,16 @@ void SceneNode::setRotation( float rotation[3] ) {
 	this->setRotation( rotation[0], rotation[1], rotation[2] );
 };
 
-void SceneNode::setTranslation( float x, float y, float z ) {
-	this->translation_[0] = x;
-	this->translation_[1] = y;
-	this->translation_[2] = z;
+void SceneNode::setPosition( float x, float y, float z ) {
+	this->position_[0] = x;
+	this->position_[1] = y;
+	this->position_[2] = z;
 
 	this->compile();
 };
 
-void SceneNode::setTranslation( float translation[3] ) {
-	this->setTranslation( translation[0], translation[1], translation[2] );
+void SceneNode::setPosition( float position[3] ) {
+	this->setPosition( position[0], position[1], position[2] );
 };
 
 void SceneNode::setVelocity( float x, float y, float z ) {
@@ -45,17 +45,17 @@ void SceneNode::setAngleVelocity( float angle_velocity[3] ) {
 };
 
 void SceneNode::rotate( float rotation[3], float deltaT ) {
-	this->rotation_[0] += rotation[0] * deltaT / 1000;
-	this->rotation_[1] += rotation[1] * deltaT / 1000;
-	this->rotation_[2] += rotation[2] * deltaT / 1000;
+	this->rotation_[0] += rotation[0] * deltaT / 1000.0f;
+	this->rotation_[1] += rotation[1] * deltaT / 1000.0f;
+	this->rotation_[2] += rotation[2] * deltaT / 1000.0f;
 
 	this->compile();
 };
 
-void SceneNode::translate( float translation[3], float deltaT ) {
-	this->translation_[0] += translation[0] * deltaT / 1000;
-	this->translation_[1] += translation[1] * deltaT / 1000;
-	this->translation_[2] += translation[2] * deltaT / 1000;
+void SceneNode::translate( float position[3], float deltaT ) {
+	this->position_[0] += position[0] * deltaT / 1000.0f;
+	this->position_[1] += position[1] * deltaT / 1000.0f;
+	this->position_[2] += position[2] * deltaT / 1000.0f;
 
 	this->compile();
 };
