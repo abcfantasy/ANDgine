@@ -73,6 +73,7 @@
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <ClCompile Include="GameObjectNode.cpp" />
+    <ClCompile Include="HeightMapModel.cpp" />
     <ClCompile Include="InputManager.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -83,6 +84,7 @@
     <ClCompile Include="LightingManager.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp">
@@ -94,6 +96,7 @@
     <ClCompile Include="TextureResource.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="TGAImage.cpp" />
     <ClCompile Include="Vertex3f.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -102,14 +105,17 @@
     <ClInclude Include="ContainerNode.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectNode.h" />
+    <ClInclude Include="HeightMapModel.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="LightingManager.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="TextureResource.h" />
+    <ClInclude Include="TGAImage.h" />
     <ClInclude Include="Vertex3f.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

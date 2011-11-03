@@ -39,17 +39,23 @@ public:
 	void setPosition( float position[3] );
 	void setVelocity( float x, float y, float z );
 	void setVelocity( float velocity[3] );
+	void addVelocity( float x, float y, float z );
+	void addVelocity( float velocity[3] );
 	void setAngleVelocity( float x, float y, float z );
 	void setAngleVelocity( float angle_velocity[3] );
+	void addAngleVelocity( float x, float y, float z );
+	void addAngleVelocity( float angle_velocity[3] );
 
 	// Rotates the object
-	// The rotation is given as as an array of 3 components representing the rotation on each axis
+	// The rotation is given as 3 components representing the rotation on each axis
 	// deltaT is used as a multiplier; Default = 1000.0f
+	void rotate( float x, float y, float z, float deltaT = 1000.0f );
 	void rotate( float rotation[3], float deltaT = 1000.0f );
 	
 	// Translates the object
-	// The translation is given as as an array of 3 components representing the rotation on each axis
+	// The translation is given as 3 components representing the translation on each axis
 	// deltaT is used as a multiplier; Default = 1000.0f
+	void translate( float x, float y, float z, float deltaT = 1000.0f );
 	void translate( float position[3], float deltaT = 1000.0f );
 
 	// Virtual methods used for compiling the graphics data into a display list

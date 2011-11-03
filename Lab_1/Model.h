@@ -6,37 +6,41 @@
 #include "Vertex3f.h"
 
 class Model {
-private:
+protected:
 	// The vertices that make up the model
 	std::vector<Vertex3f> vertices_;
-	// The texture ID as it's registered with openGL
-	GLuint textureId_;
 	// The display list ID as it's registered with openGL
 	GLuint displayListId_;
 	// The rendering method; should be an OpenGL constant; the default is GL_TRIANGLES
 	GLuint renderMethod_;
+	// The texture handle from the Resource Manager
+	int textureHandle_;
 
 public:
 	static const GLuint INVALID_HANDLE = 0xFFFFFFFF;
 	
-	// Basic constructor; no texture Id
-	Model() : textureId_( Model::INVALID_HANDLE ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
-	// Constructs a model and gives it a texture Id as well
-	Model( GLuint textureId ) : textureId_( textureId ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
-	// Basic destructor
-	~Model() {};
+	// Basic constructor; no texture Handle
+	Model() : textureHandle_( Model::INVALID_HANDLE ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
+	// Constructs a model and gives it a texture Handle as well
+	Model( int textureHandle ) : textureHandle_( textureHandle ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
+	// Basic destructor; releases a texture if it has any
+	~Model();
 
 	// Getters and setters
 	inline GLuint getRenderMethod() { return this->renderMethod_; };
 	inline void setRenderMethod( GLuint renderMethod ) { this->renderMethod_ = renderMethod; };
 
-	inline GLuint gettextureId() { return this->textureId_; };
-	inline void settextureId( GLuint textureId ) { this->textureId_ = textureId; };
+	// Getter and setter for the texture handle
+	inline GLuint getTextureHandle() { return this->textureHandle_; };
+	inline void setTextureHandle( int textureHandle ) { this->textureHandle_ = textureHandle; };
+	// Loads a texture through the Resource Manager
+	void setTexture( char *fileName );
 	
 	// Adds a vertex to the model
 	void addVertex( Vertex3f vertex );
 	// Compiles the model into a display list
-	void compile();
+	// This can be overriden by the subclasses
+	virtual void compile();
 	// Calls the display list to render the model
 	void render();
 };

@@ -1,4 +1,22 @@
 #include "Model.h"
+#include "ResourceManager.h"
+#include "TextureResource.h"
+
+// Basic destructor; releases a texture if it has any
+Model::~Model() {
+	if( this->textureHandle_ != Model::INVALID_HANDLE ) {
+		ResourceManager::instance()->removeResource( this->textureHandle_ );	
+	}
+};
+
+// Loads a texture through the Resource Manager
+void Model::setTexture( char *fileName ) {
+	// If we already had a texture, we release it
+	if( this->textureHandle_ != Model::INVALID_HANDLE ) {
+		ResourceManager::instance()->removeResource( this->textureHandle_ );	
+	}
+	this->textureHandle_ = ResourceManager::instance()->addResource<TextureResource>( fileName );
+};
 
 // Adds a vertex to the model
 void Model::addVertex( Vertex3f vertex ) {
@@ -21,9 +39,9 @@ void Model::compile() {
 	//glMateriali(GL_FRONT, GL_SHININESS, 129 );
 
 	// If we have a texture, we're using it, but if we don't we're not using it
-	// The code here may be duplicated but it works faster than it would be if we're making an check for every vertex
-	if ( this->textureId_ != Model::INVALID_HANDLE ) {
-		glBindTexture( GL_TEXTURE_2D, this->textureId_ );
+	// The code here may be duplicated but it works faster than it would be if we're making a check for every vertex
+	if ( this->textureHandle_ != Model::INVALID_HANDLE ) {
+		glBindTexture( GL_TEXTURE_2D, ((TextureResource*)ResourceManager::instance()->getElement( this->textureHandle_ ))->getTexture()->TextureID );
 		glBegin( this->renderMethod_ );
 		for( std::vector<Vertex3f>::iterator i = this->vertices_.begin(); i != this->vertices_.end(); ++i ) {
 			glNormal3f( i->getNormalX(), i->getNormalY(), i->getNormalZ() );

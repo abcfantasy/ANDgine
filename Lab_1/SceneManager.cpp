@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "GameObjectNode.h"
 #include "Model.h"
+#include "HeightMapModel.h"
 #include "ResourceManager.h"
 #include "TextureResource.h"
 
@@ -13,10 +14,8 @@ SceneManager* SceneManager::instance() {
 };
 
 void SceneManager::initializeScene() {
-	// TODO: Make this part a bit more syntax-friendly
-	unsigned int handle = ResourceManager::instance()->addResource<TextureResource>( "stone54.jpg" );
-	TextureResource *texture = (TextureResource*)((*ResourceManager::instance())[handle]);
-	Model *pyramid = new Model( texture->getTexture()->TextureID );
+	Model *pyramid = new Model();
+	pyramid->setTexture( "Textures\\stone54.jpg" );
 
 	// front face
 	pyramid->addVertex( Vertex3f(		// bottom left (green)
@@ -89,8 +88,17 @@ void SceneManager::initializeScene() {
 	GameObjectNode *pyramidNode = new GameObjectNode( GameObject( pyramid ) );
 	pyramidNode->setVelocity( 0.0f, 0.0f, 0.0f );
 	pyramidNode->setAngleVelocity( 0.0f, 40.0f, 0.0f );
+	
+	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\heightmap_smooth.tga", 0.0f, 15.0f );
+	terrain->setTexture( "Textures\\dirt.tga" );
+	
+	GameObjectNode *terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
+	float pos_[3] = { 25.0f, -15.0f, 25.0f };
+	terrainNode->translate( pos_ );
+	terrainNode->setAngleVelocity( 0.0f, 10.0f, 0.0f );
 
 	this->sceneGraph_.addObject( pyramidNode );
+	this->sceneGraph_.addObject( terrainNode );
 	float pos[3] = { 0.0f, 0.0f, -3.0f };
 	this->sceneGraph_.translate( pos );
 };
@@ -105,5 +113,5 @@ void SceneManager::renderScene() {
 
 	this->sceneGraph_.render( deltaT );
 
-	SDL_GL_SwapBuffers( );
+	SDL_GL_SwapBuffers();
 };

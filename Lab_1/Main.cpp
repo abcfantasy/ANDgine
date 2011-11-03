@@ -84,19 +84,18 @@ void KeyDown( SDLKey key, SDLMod mod )
 	// one option is to check the key here and handle result
 	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
 	// TODO: Make this part a bit more syntax-friendly
-	if ( key == SDLK_UP )
-		SceneManager::instance()->getSceneGraph()->getObjectAt(0)->setVelocity( 0.0f, 0.0f, -0.5f );
-	if ( key == SDLK_DOWN )
-		SceneManager::instance()->getSceneGraph()->getObjectAt(0)->setVelocity( 0.0f, 0.0f, 0.5f );
-	if ( key == SDLK_RIGHT )
-		SceneManager::instance()->getSceneGraph()->getObjectAt(0)->setVelocity( 0.5f, 0.0f, 0.0f );
-	if ( key == SDLK_LEFT )
-		SceneManager::instance()->getSceneGraph()->getObjectAt(0)->setVelocity( -0.5f, 0.0f, 0.0f );
+	if ( key == SDLK_UP )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, -0.5f );
+	if ( key == SDLK_DOWN )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, 0.5f );
+	if ( key == SDLK_RIGHT )SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.5f, 0.0f, 0.0f );
+	if ( key == SDLK_LEFT )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( -0.5f, 0.0f, 0.0f );
 }
 
 void KeyUp( SDLKey key, SDLMod mod )
 {
-	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->setVelocity( 0.0f, 0.0f, 0.0f );
+	if ( key == SDLK_UP )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, 0.5f );
+	if ( key == SDLK_DOWN )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, -0.5f );
+	if ( key == SDLK_RIGHT )SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( -0.5f, 0.0f, 0.0f );
+	if ( key == SDLK_LEFT )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.5f, 0.0f, 0.0f );
 }
 
 void initializeManagers() {
@@ -111,11 +110,12 @@ void initializeManagers() {
 	
 	glEnable( GL_TEXTURE_2D );	
 
-	GLfloat ambientLight[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	GLfloat ambientLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	GLfloat diffuseLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
 	GLfloat specularLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
 	GLfloat position[] = { -5.0f, 0.5f, 0.0f, 1.0f };
 	LightingManager::instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
+	LightingManager::instance()->setGlobalAmbient( ambientLight );
 };
 
 int main( int argc, char **argv )

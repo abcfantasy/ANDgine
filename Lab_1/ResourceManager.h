@@ -9,7 +9,7 @@
 class ResourceManager {
 private:
 	std::stack<unsigned int> handles_;	// list of free handles
-	std::vector<Resource*> *list_;				// list of pointers to resources
+	std::vector<Resource*> list_;				// list of pointers to resources
 	// constructor
 	ResourceManager();
 	// destructor
@@ -18,7 +18,7 @@ public:
 	static ResourceManager* instance();
 	
 	// returns a pointer to the vector of resources
-	inline std::vector<Resource*>* getList() { return this->list_; }
+	inline std::vector<Resource*> getList() { return this->list_; }
 
 	// returns a resource by filename
 	Resource* getElement( char* filePath );
@@ -36,7 +36,7 @@ public:
 	template <class T>
 	unsigned int addResource( char *filePath ) {
 		// check that filename and list are valid
-		if ( this->list_ == NULL || filePath == NULL )
+		if ( filePath == NULL )
 			return -1;
 
 		// if element already exists
@@ -49,25 +49,21 @@ public:
 		// check for available handle or use new handle
 		bool handleAvailable = !this->handles_.empty();
 		unsigned int handle;
+
+		// We "reserve" the handle by inserting a NULL value in its place
+		// This ensures that even if some other resource will be added, the handles won't overlap
 		if ( handleAvailable ) {
 			handle = this->handles_.top();
 			this->handles_.pop();
+			list_[handle] = NULL;
 		}
-		else
-			handle = this->list_->size();
+		else {
+			handle = this->list_.size();
+			this->list_.push_back(NULL);
+		}
 
 		// create the resource
-		Resource *resource = (Resource*)( new T( handle, filePath ) );
-		/*if ( this->CreateResource != NULL )
-			CreateResource( &resource, handle, filePath );
-		else
-			resource = new T(handle, filePath);
-			*/
-		// add the resource to the manager
-		if ( handleAvailable )
-			(*list_)[handle] = resource;
-		else
-			this->list_->push_back(resource);
+		this->list_[handle] = (Resource*)( new T( handle, filePath ) );
 
 		// return the handle
 		return handle;
