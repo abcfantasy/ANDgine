@@ -17,6 +17,16 @@ void Math::crossProduct( float *a, float *b, float *c, float *result ) {
 	result[1] = v1[2] * v2[0] - v1[0] * v2[2];
 }
 
+float Math::dotProduct( float *a, float *b ) {
+	return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]);
+}
+
+void Math::negate( float *a, float *result ) {
+	result[0] = -a[0];
+	result[1] = -a[1];
+	result[2] = -a[2];
+}
+
 void Math::normalize( float *v ) {
 	float d;
 
@@ -32,6 +42,12 @@ void Math::addVector (float *a, float *b ) {
 	a[0] += b[0];
 	a[1] += b[1];
 	a[2] += b[2];
+}
+
+void Math::subtract( float *a, float *b, float *result ) {
+	result[0] = a[0] - b[0];
+	result[1] = a[1] - b[1];
+	result[2] = a[2] - b[2];
 }
 
 bool Math::isNullVector( float *v ) {
