@@ -1,12 +1,17 @@
 #include "SceneManager.h"
 #include "SDL.h"
-#include "SceneNode.h"
-#include "GameObject.h"
-#include "GameObjectNode.h"
+
+#include "InputManager.h"
+#include "ResourceManager.h"
+
 #include "Model.h"
 #include "HeightMapModel.h"
-#include "ResourceManager.h"
 #include "TextureResource.h"
+#include "GameObject.h"
+
+#include "SceneNode.h"
+#include "GameObjectNode.h"
+#include "PlayerNode.h"
 
 SceneManager* SceneManager::instance() {
 	static SceneManager sm;
@@ -84,23 +89,22 @@ void SceneManager::initializeScene() {
 		1.0f, 0.0f, 0.0f, 
 		-1.0f, 1.0f, 0.0f,
 		0.5f, 1.0f) );		// top (red)
-	
-	GameObjectNode *pyramidNode = new GameObjectNode( GameObject( pyramid ) );
-	pyramidNode->setVelocity( 0.0f, 0.0f, 0.0f );
-	pyramidNode->setAngleVelocity( 0.0f, 40.0f, 0.0f );
-	
-	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\heightmap_smooth.tga", 0.0f, 15.0f );
+
+	playerNode_ = new PlayerNode( GameObject( pyramid ) );
+
+	this->sceneGraph_.addObject( playerNode_ );
+
+	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\hildebrand.tga", 0.0f, 15.0f );
 	terrain->setTexture( "Textures\\dirt.tga" );
 	
 	GameObjectNode *terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
-	float pos_[3] = { 25.0f, -15.0f, 25.0f };
-	terrainNode->translate( pos_ );
-	terrainNode->setAngleVelocity( 0.0f, 10.0f, 0.0f );
+	terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
-	this->sceneGraph_.addObject( pyramidNode );
 	this->sceneGraph_.addObject( terrainNode );
-	float pos[3] = { 0.0f, 0.0f, -3.0f };
-	this->sceneGraph_.translate( pos );
+	this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
+
+	InputManager::instance()->addKeyDownEvent( &SceneManager::keyDown );
+	InputManager::instance()->addKeyUpEvent( &SceneManager::keyUp );
 };
 
 void SceneManager::renderScene() {
@@ -115,3 +119,21 @@ void SceneManager::renderScene() {
 
 	SDL_GL_SwapBuffers();
 };
+
+void SceneManager::keyDown( SDLKey key, SDLMod mod )
+{
+	// one option is to check the key here and handle result
+	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
+	if ( key == SDLK_UP )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f ); }
+	if ( key == SDLK_DOWN )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f ); }
+	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
+	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
+}
+
+void SceneManager::keyUp( SDLKey key, SDLMod mod )
+{
+	if ( key == SDLK_UP )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f ); }
+	if ( key == SDLK_DOWN )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f ); }
+	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
+	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
+}

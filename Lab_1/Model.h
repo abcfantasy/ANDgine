@@ -36,6 +36,9 @@ public:
 	// Loads a texture through the Resource Manager
 	void setTexture( char *fileName );
 	
+	// Operator to access a vertex based on index
+	Vertex3f* operator[]( int i ) { return &this->vertices_[i]; };
+
 	// Adds a vertex to the model
 	void addVertex( Vertex3f vertex );
 	// Compiles the model into a display list

@@ -7,7 +7,7 @@
 // Class that holds information related to a particular instance of a GameObject
 // Implements the FlyWeight design pattern (this will be a nice thing to mention in a presentation)
 class GameObjectNode : public SceneNode {
-private:
+protected:
 	// The contained game object
 	GameObject gameObject_;
 	// TODO: Add other related attributes as they are decided
@@ -15,7 +15,7 @@ private:
 public:
 	// Basic constructor/destructor
 	GameObjectNode( GameObject gameObject );
-	~GameObjectNode();
+	~GameObjectNode() {};
 
 	// Getter
 	inline GameObject* getGameObject() { return &this->gameObject_; };

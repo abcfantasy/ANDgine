@@ -24,8 +24,8 @@ private:
 	// polling variables
 	bool keys_[322];		// 322 to handle enough keys on the keyboard
 	bool mouseButtons_[8];	// handles all mouse buttons incl. wheel
-	Uint16 lastMouseX;		// last mouse x
-	Uint16 lastMouseY;		// last mouse y
+	int lastMouseX;		// last mouse x
+	int lastMouseY;		// last mouse y
 
 	// event callbacks
 	KeyCallback onKeyDown_;
@@ -45,12 +45,14 @@ public:
 
 	// handle input
 	void handle(SDL_Event* Event);
+	void handleMouse();
 
 	// used for polling
 	inline bool* getKeys() { return this->keys_; }
 	inline bool* getMouseButtons() { return this->mouseButtons_; }
-	inline Uint16 getLastMouseX() { return this->lastMouseX; }
-	inline Uint16 getLastMouseY() { return this->lastMouseY; }
+	inline int	getLastMouseX() { return this->lastMouseX; }
+	inline int	getLastMouseY() { return this->lastMouseY; }
+	void getMouseAngle( float *angle_y, float *angle_z );
 
 	// events
 	void addKeyDownEvent( KeyCallback OnKeyDown );

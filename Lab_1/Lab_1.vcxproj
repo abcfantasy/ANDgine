@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ContainerNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -86,6 +87,7 @@
     </ClCompile>
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PlayerNode.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
@@ -102,6 +104,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="ContainerNode.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectNode.h" />
@@ -110,6 +113,7 @@
     <ClInclude Include="LightingManager.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="PlayerNode.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />

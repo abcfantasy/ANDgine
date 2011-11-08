@@ -49,14 +49,14 @@ public:
 	// Rotates the object
 	// The rotation is given as 3 components representing the rotation on each axis
 	// deltaT is used as a multiplier; Default = 1000.0f
-	void rotate( float x, float y, float z, float deltaT = 1000.0f );
-	void rotate( float rotation[3], float deltaT = 1000.0f );
+	virtual void rotate( float x, float y, float z, float deltaT = 1000.0f );
+	virtual void rotate( float rotation[3], float deltaT = 1000.0f );
 	
 	// Translates the object
 	// The translation is given as 3 components representing the translation on each axis
 	// deltaT is used as a multiplier; Default = 1000.0f
-	void translate( float x, float y, float z, float deltaT = 1000.0f );
-	void translate( float position[3], float deltaT = 1000.0f );
+	virtual void translate( float x, float y, float z, float deltaT = 1000.0f );
+	virtual void translate( float position[3], float deltaT = 1000.0f );
 
 	// Virtual methods used for compiling the graphics data into a display list
 	virtual void compile() = 0;

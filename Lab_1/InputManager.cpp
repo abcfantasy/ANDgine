@@ -93,3 +93,31 @@ void InputManager::addMouseUpEvent(MouseButtonCallback OnMouseUp )
 {
 	this->onMouseUp_ = OnMouseUp;
 }
+
+/* polling the mouse position */
+void InputManager::handleMouse() {
+	SDL_GetMouseState( &this->lastMouseX, &this->lastMouseY );
+};
+
+/* converts the polled mouse position into X and Y angles */
+void InputManager::getMouseAngle( float *angle_x, float *angle_y ) {
+	// Coordinates for the middle of the screen	
+	int mid_x = 320;
+	int mid_y = 240;
+	
+	// If we haven't moved at all, don't calculate further
+	if( (this->lastMouseX == mid_x) && (this->lastMouseY == mid_y) ) {
+		*angle_x  = 0.0f;
+		*angle_y  = 0.0f;
+		return;
+	}
+
+	// Reset the mouse to the center of the window
+	SDL_WarpMouse( mid_x, mid_y );
+
+	// Get the direction from the mouse cursor, set a resonable maneuvering speed
+	// Note that the x angle is given by the Y movement and the Y angle is given by the X movement
+	*angle_x = (float)( (mid_y - this->lastMouseY) ) / 100;
+	*angle_y = (float)( (mid_x - this->lastMouseX) ) / 10;
+	
+};

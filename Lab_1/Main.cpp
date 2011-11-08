@@ -10,7 +10,6 @@
 #include "SceneManager.h"
 #include "InputManager.h"
 #include "LightingManager.h"
-#include "TextureResource.h"
 
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
@@ -61,6 +60,9 @@ int initGL( GLvoid )
 
 	/* Enables Depth Testing */
 	glEnable( GL_DEPTH_TEST );
+	
+	/* Enables texturing */
+	glEnable( GL_TEXTURE_2D );	
 
 	/* The Type Of Depth Test To Do */
 	glDepthFunc( GL_LEQUAL );
@@ -79,43 +81,18 @@ int initGL( GLvoid )
 	return( TRUE );
 }
 
-void KeyDown( SDLKey key, SDLMod mod )
-{
-	// one option is to check the key here and handle result
-	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
-	// TODO: Make this part a bit more syntax-friendly
-	if ( key == SDLK_UP )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, -0.5f );
-	if ( key == SDLK_DOWN )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, 0.5f );
-	if ( key == SDLK_RIGHT )SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.5f, 0.0f, 0.0f );
-	if ( key == SDLK_LEFT )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( -0.5f, 0.0f, 0.0f );
-}
-
-void KeyUp( SDLKey key, SDLMod mod )
-{
-	if ( key == SDLK_UP )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, 0.5f );
-	if ( key == SDLK_DOWN )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.0f, 0.0f, -0.5f );
-	if ( key == SDLK_RIGHT )SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( -0.5f, 0.0f, 0.0f );
-	if ( key == SDLK_LEFT )	SceneManager::instance()->getSceneGraph()->getObjectAt(0)->addVelocity( 0.5f, 0.0f, 0.0f );
-}
-
 void initializeManagers() {
-	SceneManager::instance()->initializeScene();
-	InputManager::instance()->addKeyDownEvent( &KeyDown );
-	InputManager::instance()->addKeyUpEvent( &KeyUp );
-
-	/* Enable lighting and color material */
-	LightingManager::instance()->initializeColorMaterialLighting();
-	
-//	handle = TextureResourceManager.addResource( "stone55.jpg" );
-	
-	glEnable( GL_TEXTURE_2D );	
-
 	GLfloat ambientLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	GLfloat diffuseLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
 	GLfloat specularLight[] = { 0.9f, 0.9f, 0.9f, 1.0f };
 	GLfloat position[] = { -5.0f, 0.5f, 0.0f, 1.0f };
+
+	/* Enable lighting and color material */
+	LightingManager::instance()->initializeColorMaterialLighting();
 	LightingManager::instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
 	LightingManager::instance()->setGlobalAmbient( ambientLight );
+
+	SceneManager::instance()->initializeScene();
 };
 
 int main( int argc, char **argv )
@@ -165,7 +142,7 @@ int main( int argc, char **argv )
 
 	/* Sets up OpenGL double buffering */
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
+	
 	/* get a SDL surface */
 	surface = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
 				videoFlags );
@@ -185,12 +162,17 @@ int main( int argc, char **argv )
 
 	/* initializing the managers */
 	initializeManagers();
+	
+	/* we don't show the mouse cursor */
+	SDL_ShowCursor( FALSE );
+	SDL_WarpMouse( 320, 240 );
 
 	/* wait for events */ 
 	while ( !done )
 	{
+		InputManager::instance()->handleMouse();
+		
 		/* handle the events in the queue */
-
 		while ( SDL_PollEvent( &event ) )
 		{
 			InputManager::instance()->handle(&event);
