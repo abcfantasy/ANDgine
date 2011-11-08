@@ -30,13 +30,13 @@ public:
 	GLubyte *image_;
 
 	// Loads the image from a file
-	TGAImage( const int handle, char *fileName );
+	TGAImage( const int handle, char *fileName ) : Resource( handle, fileName ) {};
 	// Frees the memory
 	~TGAImage();
 
 	// Reads the image from the file
 	// This is called in the constructor
-	bool load();
+	void load();
 	// Initializes the image from the header
 	// This is called during load()
 	void initialize( TGAHeader *header );

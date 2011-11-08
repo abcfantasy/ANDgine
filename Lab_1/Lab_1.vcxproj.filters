@@ -34,17 +34,14 @@
     <Filter Include="Source Files\Scene Graph">
       <UniqueIdentifier>{c1d58706-560f-40ea-8d94-b18185fe6788}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\File Formats">
+    <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{a6a8d072-a6cb-4bb8-bab9-df662c48280b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\File Formats">
+    <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{9a010c18-e3b9-4740-9bb6-9db48bbe28be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="LightingManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -53,9 +50,6 @@
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Source Files\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureResource.cpp">
-      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Vertex3f.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -76,10 +70,7 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="TGAImage.cpp">
-      <Filter>Source Files\File Formats</Filter>
-    </ClCompile>
-    <ClCompile Include="HeightMapModel.cpp">
-      <Filter>Source Files\Rendering</Filter>
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>Source Files</Filter>
@@ -90,11 +81,17 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapModel.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
@@ -103,9 +100,6 @@
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Header Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureResource.h">
-      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Vertex3f.h">
       <Filter>Header Files\Rendering</Filter>
@@ -125,14 +119,8 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files\Game Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files\Game Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="HeightMapModel.h">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="TGAImage.h">
-      <Filter>Header Files\File Formats</Filter>
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Math.h">
       <Filter>Header Files</Filter>
@@ -142,6 +130,18 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapModel.h">
+      <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

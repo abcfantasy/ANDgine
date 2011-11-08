@@ -83,7 +83,7 @@ private:
 	GLubyte				m_GreenAlphaMatch;
 	GLubyte 			m_BlueAlphaMatch;
 
-	int TextureResource::LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture);
+	int LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture);
 	int BuildTexture(char *szPathName, glTexture *pglTexture);
 	int GenerateTexture(glTexture *pglTexture, GLubyte *pImgData);
 	void ExtensionFromFilename(char *szFileName, char *szExtension);
@@ -102,6 +102,7 @@ public:
 	void SetTextureFilter(eglTexFilterType type);
 
 	void FreeTexture(glTexture *pglTexture);
+	void load() {};
 };
 
 #endif

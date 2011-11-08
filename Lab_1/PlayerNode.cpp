@@ -32,7 +32,7 @@ void PlayerNode::render( float deltaT ) {
 
 void PlayerNode::rotate( float x, float y, float z, float deltaT ) {
 	this->camera_.rotate( x, y, deltaT );
-	SceneNode::rotate( x, y, z, deltaT );
+	SceneNode::rotate( 0.0f, y, z, deltaT );
 };
 
 void PlayerNode::rotate( float rotation[3], float deltaT ) {

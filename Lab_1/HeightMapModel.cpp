@@ -4,62 +4,6 @@
 #include "TGAImage.h"
 #include "Math.h"
 
-// Builds a heightmap from a TGA image
-HeightMapModel::HeightMapModel( char *fileName, float minScale, float maxScale ) : minScale_( minScale ), maxScale_( maxScale ) {
-	// Loading the image from the Resource Manager
-	unsigned int tgaImageHandle = ResourceManager::instance()->addResource<TGAImage>( fileName );
-	TGAImage *tgaImage = (TGAImage*)ResourceManager::instance()->getElement( tgaImageHandle );
-	
-	// The width and length of the model (in units) are the same as the values in pixels
-	this->width_ = tgaImage->width_;
-	this->length_ = tgaImage->height_;
-	
-	// The texture coordinates will be at fixed increments which we compute here
-	float textureIncrementX = 1.0f / this->width_;
-	float textureIncrementZ = 1.0f / this->length_;
-	// The model will be centered around the origin
-	float xOffset = -(this->width_ / 2.0f);
-	float yOffset = -(this->length_ / 2.0f);
-
-	// This calculates the amplitude of the scaling
-	float amp = this->maxScale_ - this->minScale_;
-	// This keeps track of the byte we're at in the image
-	int pixel = 0;
-	// We're applying all the modifications to a single vertex
-	// The vertices in the array are copies anyway
-	Vertex3f point;
-	
-	// We start calculating the vertices
-	for (int i = 0 ; i < this->length_; ++i)
-		for (int j = 0;j < this->width_; ++j, pixel += tgaImage->bytesPerPx_ ) {
-			// The X and Z positions depend on the pixel we're at
-			point.setX( float(j) + xOffset );
-			point.setZ( float(i) + xOffset );
-			// The Y position scales with the last component of the pixel
-			// And is interpolated using the amplitude
-			point.setY( amp * ( tgaImage->image_[pixel + ( tgaImage->bytesPerPx_ - 1 ) ] / 256.0f ) );
-
-			// The texture coordinates are also easy
-			point.setU( j * textureIncrementX );
-			point.setV( i * textureIncrementZ );
-
-			// If mode = RGBA then we fill in the colors as well
-			if ( tgaImage->bytesPerPx_ == 4 ) {
-				point.setR( tgaImage->image_[pixel] / 256.0f );
-				point.setG( tgaImage->image_[pixel + 1] / 256.0f );
-				point.setB( tgaImage->image_[pixel + 2] / 256.0f );
-			}
-			this->addVertex( point );
-		}
-	// We're done with the image now
-	ResourceManager::instance()->removeResource( tgaImageHandle );
-	
-	// We need to calculate the normals for lighting
-	this->computeNormals();
-	// The rendering is done as a triangle strip
-	this->renderMethod_ = GL_TRIANGLE_STRIP;
-};
-
 // Easy access to a particular vertex
 // heightmap( i, j ) = the vertex at position i,j
 Vertex3f* HeightMapModel::operator()( int i, int j ) {
@@ -187,5 +131,71 @@ void HeightMapModel::computeNormals() {
 			norm1[2] = -norm1[2];
 			(*this)( i, j )->setNormal( norm1 );
 		}
+};
 
-}
+void HeightMapModel::load() {
+	// Loading the image from the Resource Manager
+	unsigned int tgaImageHandle = ResourceManager::instance()->addResource<TGAImage>( this->filename_ );
+	TGAImage *tgaImage = (TGAImage*)ResourceManager::instance()->getElement( tgaImageHandle );
+	
+	// The width and length of the model (in units) are the same as the values in pixels
+	this->width_ = tgaImage->width_;
+	this->length_ = tgaImage->height_;
+	
+	// The texture coordinates will be at fixed increments which we compute here
+	float textureIncrementX = 1.0f / this->width_;
+	float textureIncrementZ = 1.0f / this->length_;
+	// The model will be centered around the origin
+	float xOffset = -(this->width_ / 2.0f);
+	float yOffset = -(this->length_ / 2.0f);
+
+	// This calculates the amplitude of the scaling
+	float amp = this->maxScale_ - this->minScale_;
+	// This keeps track of the byte we're at in the image
+	int pixel = 0;
+	// We're applying all the modifications to a single vertex
+	// The vertices in the array are copies anyway
+	Vertex3f point;
+	
+	// We start calculating the vertices
+	for (int i = 0 ; i < this->length_; ++i)
+		for (int j = 0;j < this->width_; ++j, pixel += tgaImage->bytesPerPx_ ) {
+			// The X and Z positions depend on the pixel we're at
+			point.setX( float(j) + xOffset );
+			point.setZ( float(i) + xOffset );
+			// The Y position scales with the last component of the pixel
+			// And is interpolated using the amplitude
+			point.setY( amp * ( tgaImage->image_[pixel + ( tgaImage->bytesPerPx_ - 1 ) ] / 256.0f ) );
+
+			// The texture coordinates are also easy
+			point.setU( j * textureIncrementX );
+			point.setV( i * textureIncrementZ );
+
+			// If mode = RGBA then we fill in the colors as well
+			if ( tgaImage->bytesPerPx_ == 4 ) {
+				point.setR( tgaImage->image_[pixel] / 256.0f );
+				point.setG( tgaImage->image_[pixel + 1] / 256.0f );
+				point.setB( tgaImage->image_[pixel + 2] / 256.0f );
+			}
+			this->addVertex( point );
+		}
+	// We're done with the image now
+	ResourceManager::instance()->removeResource( tgaImageHandle );
+	
+	// We need to calculate the normals for lighting
+	this->computeNormals();
+	// The rendering is done as a triangle strip
+	this->renderMethod_ = GL_TRIANGLE_STRIP;
+};
+
+// Rescales the model between min and max
+void HeightMapModel::rescale( float minScale, float maxScale ) {
+	float oldAmp = this->maxScale_ - this->minScale_;
+	float newAmp = maxScale - minScale;
+
+	for( std::vector<Vertex3f>::iterator i = this->vertices_.begin(); i != this->vertices_.end(); ++i )
+		i->setY( i->getY() * newAmp / oldAmp );
+
+	this->minScale_ = minScale;
+	this->maxScale_ = maxScale;
+};

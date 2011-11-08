@@ -2,11 +2,6 @@
 #include "SDL_opengl.h"
 #include <stdio.h>
 
-// Loads the image from a file
-TGAImage::TGAImage( const int handle, char *fileName ) : Resource( handle, fileName ) {
-	this->load();
-};
-
 // Frees the memory
 TGAImage::~TGAImage() {
 	if( this->image_ != NULL ) {
@@ -17,16 +12,16 @@ TGAImage::~TGAImage() {
 
 // Reads the image from the file
 // This is called in the constructor
-bool TGAImage::load() {
+void TGAImage::load() {
 	FILE		*fTGA;											// File pointer to the image
 	TGAHeader	header;											// The header of the file
 	
 	fopen_s( &fTGA, this->getFilename(), "rb");					// Open file for reading
-	if(fTGA == NULL) return false;								// If it didn't open, exit function
+	if(fTGA == NULL) return;									// If it didn't open, exit function
 
 	if(fread(&header, sizeof(TGAHeader), 1, fTGA) == 0) {		// Attempt to read 12 byte header from file
 		if(fTGA != NULL) fclose(fTGA);							// Check to see if file is still open. If it is, close it
-		return false;											// Exit function
+		return;													// Exit function
 	}
 
 	// Set the header info
@@ -36,7 +31,7 @@ bool TGAImage::load() {
 	if( !this->isValid() || this->image_ == NULL ) {
 		// invalid header, bomb out
 		fclose( fTGA );
-		return false;
+		return;
 	}
 
 	// Skip image ident field
@@ -47,7 +42,7 @@ bool TGAImage::load() {
 	if (this->type_ == 2) {
 		if(fread(this->image_, 1, this->size_, fTGA) != this->size_) {	// Attempt to read image data
 			fclose(fTGA);												// Close file
-			return false;												// Return failed
+			return;														// Return failed
 		}
 
 		// Byte Swapping Optimized By Steve Thomas
@@ -66,7 +61,7 @@ bool TGAImage::load() {
 			GLubyte chunkheader = 0;									// Storage for "chunk" header
 			if(fread(&chunkheader, sizeof(GLubyte), 1, fTGA) == 0) {	// Read in the 1 byte header
 				if(fTGA != NULL) fclose(fTGA);							// If file is open, close file
-				return false;											// Return failed
+				return;													// Return failed
 			}
 
 			if(chunkheader < 128) {																// If the header is < 128, it means the that is the number of RAW color packets minus 1 that follow the header
@@ -75,7 +70,7 @@ bool TGAImage::load() {
 					if(fread(colorbuffer, 1, this->bytesPerPx_, fTGA) != this->bytesPerPx_) {	// Try to read 1 pixel
 						if(fTGA != NULL) fclose(fTGA);					// See if file is open. If so, close file
 						if(colorbuffer != NULL) delete[] colorbuffer;	// See if colorbuffer has data in it. If so, delete it
-						return false;									// Return failed
+						return;											// Return failed
 					}
 																		// write to memory
 					this->image_[currentbyte	] = colorbuffer[2];		// Flip R and B vcolor values around in the process
@@ -91,7 +86,7 @@ bool TGAImage::load() {
 					if(currentpixel > pixelcount) {						// Make sure we havent read too many pixels
 						if(fTGA != NULL) fclose(fTGA);					// If there is a file open, close file
 						if(colorbuffer != NULL)	delete[] colorbuffer;	// If there is data in colorbuffer, delete it
-						return false;									// Return failed
+						return;											// Return failed
 					}
 				}
 			}
@@ -101,7 +96,7 @@ bool TGAImage::load() {
 				if(fread(colorbuffer, 1, this->bytesPerPx_, fTGA) != this->bytesPerPx_) {	// Attempt to read following color values
 					if(fTGA != NULL) fclose(fTGA);						// If thereis a file open
 					if(colorbuffer != NULL) delete[] colorbuffer;		// If there is data in the colorbuffer
-					return false;										// return failed
+					return;												// return failed
 				}
 
 				for(short counter = 0; counter < chunkheader; counter++) {	// copy the color into the image data as many times as dictated by the header
@@ -112,13 +107,13 @@ bool TGAImage::load() {
 					if(this->bytesPerPx_ == 4)							// If TGA images is 32 bpp
 						this->image_[currentbyte + 3] = colorbuffer[3];	// Copy 4th byte
 
-					currentbyte += this->bytesPerPx_;				// Increase current byte by the number of bytes per pixel
+					currentbyte += this->bytesPerPx_;					// Increase current byte by the number of bytes per pixel
 					currentpixel++;										// Increase pixel count by 1
 
 					if(currentpixel > pixelcount) {						// Make sure we havent written too many pixels
 						if(fTGA != NULL) fclose(fTGA);					// If there is a file open, close file
 						if(colorbuffer != NULL)	delete[] colorbuffer;	// If there is data in colorbuffer, delete it
-						return false;									// Return failed
+						return;											// Return failed
 					}
 				} // for(counter)
 			} // if(chunkheader)
@@ -126,7 +121,6 @@ bool TGAImage::load() {
 	} // if (tgaImage->type_ == 2)
 
 	fclose (fTGA);
-	return true;
 };
 
 // Initializes the image from the header

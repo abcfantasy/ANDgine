@@ -64,6 +64,8 @@ public:
 
 		// create the resource
 		this->list_[handle] = (Resource*)( new T( handle, filePath ) );
+		// call its initialization method
+		this->list_[handle]->load();
 
 		// return the handle
 		return handle;

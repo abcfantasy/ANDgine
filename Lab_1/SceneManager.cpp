@@ -6,10 +6,8 @@
 
 #include "Model.h"
 #include "HeightMapModel.h"
-#include "TextureResource.h"
 #include "GameObject.h"
 
-#include "SceneNode.h"
 #include "GameObjectNode.h"
 #include "PlayerNode.h"
 
@@ -19,85 +17,25 @@ SceneManager* SceneManager::instance() {
 };
 
 void SceneManager::initializeScene() {
-	Model *pyramid = new Model();
-	pyramid->setTexture( "Textures\\stone54.jpg" );
+	int playerModelHandle = ResourceManager::instance()->addResource<Model>( "Models\\smiley.obj" );
+	Model *playerModel = (Model*)ResourceManager::instance()->getElement( playerModelHandle );
+	playerModel->setTexture( "Textures\\smile.jpg" );
 
-	// front face
-	pyramid->addVertex( Vertex3f(		// bottom left (green)
-		-0.5f, -0.5f, 0.5f,				// position
-		0.0f, 1.0f, 0.0f,				// color
-		0.0f, 0.0f, 1.0f,				// normal
-		0.0f, 0.0f ) );					// texture
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, 0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f ) );		// bottom right (blue)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		0.0f, 1.0f, 1.0f,
-		0.5f, 1.0f) );		// top (red)
-
-	// right face
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, 0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f ) );		// bottom left (blue)
-	pyramid->addVertex( Vertex3f(
-		0.5f, -0.5f, -0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f ) );		// bottom right (green)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		1.0f, 1.0f, 0.0f,
-		0.5f, 1.0f ) );		// top (red)
-
-	// back face
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, -0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f ) );		// bottom left (green)
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, -0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, -1.0f,
-		1.0f, 0.0f) );	// bottom right (blue)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		0.0f, 1.0f, -1.0f,
-		0.5f, 1.0f) );		// top (red)
-
-	// left face
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, -0.5f,
-		0.0f, 0.0f, 1.0f, 
-		-1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f ) );	// bottom left (blue)
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, 0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		-1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f) );		// bottom right (green)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		-1.0f, 1.0f, 0.0f,
-		0.5f, 1.0f) );		// top (red)
-
-	playerNode_ = new PlayerNode( GameObject( pyramid ) );
-
+	playerNode_ = new PlayerNode( GameObject( playerModel ) );
 	this->sceneGraph_.addObject( playerNode_ );
-
-	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\hildebrand.tga", 0.0f, 15.0f );
-	terrain->setTexture( "Textures\\dirt.tga" );
 	
-	GameObjectNode *terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
+	int planetHandle = ResourceManager::instance()->addResource<Model>( "Models\\planet3f.obj" );
+	Model *planet = (Model*)ResourceManager::instance()->getElement( planetHandle );
+	planet->setTexture( "Textures\\world.jpg" );
+	GameObjectNode *planetNode = new GameObjectNode( GameObject( planet ) );
+	planetNode->setAngleVelocity(0.0f, 20.0f, 0.0f );
+	this->sceneGraph_.addObject( planetNode );
+	
+	int terrainModelHandle = ResourceManager::instance()->addResource<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
+	HeightMapModel *terrainModel = (HeightMapModel*)ResourceManager::instance()->getElement( terrainModelHandle );
+	terrainModel->setTexture( "Textures\\dirt.tga" );
+	terrainModel->rescale( 0.0f, 15.0f );
+	GameObjectNode *terrainNode = new GameObjectNode( GameObject( terrainModel ) );
 	terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
 	this->sceneGraph_.addObject( terrainNode );

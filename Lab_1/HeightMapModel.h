@@ -21,7 +21,7 @@ private:
 public:
 	// Builds a heightmap from a TGA image and scaling parameters
 	// For example, give it a scale between 0.0f and 10.0f all the heights will be interpolated between 0.0f and 10.0f
-	HeightMapModel( char *fileName, float minScale = 0.0f, float maxScale = 1.0f );
+	HeightMapModel( const unsigned int handle, char *fileName, float minScale = 0.0f, float maxScale = 1.0f ) : Model( handle, fileName ), minScale_( minScale ), maxScale_( maxScale ) {};
 	// Basic destructor
 	~HeightMapModel() {};
 
@@ -31,6 +31,12 @@ public:
 	// Easy access to a particular vertex
 	// heightmap( i, j ) = the vertex at position i,j
 	Vertex3f* operator()( int i, int j );
+
+	// Loads the model from the image file
+	void load();
+
+	// Rescales the model between min and max
+	void rescale( float minScale = 0.0f, float maxScale = 1.0f );
 };
 
 #endif
