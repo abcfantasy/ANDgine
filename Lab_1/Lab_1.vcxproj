@@ -70,7 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CellManager.cpp" />
     <ClCompile Include="ContainerNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -106,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CellManager.h" />
     <ClInclude Include="ContainerNode.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectNode.h" />
@@ -116,6 +116,7 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="PlayerNode.h" />
+    <ClInclude Include="rapidxml.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
@@ -123,6 +124,9 @@
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="TGAImage.h" />
     <ClInclude Include="Vertex3f.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sampleXML.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
