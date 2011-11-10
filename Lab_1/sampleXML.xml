@@ -1,0 +1,10 @@
+﻿<level>
+  <cell1x1>
+    <models>
+      <model>
+        <objPath>Models\\planet3f.obj</objPath>
+        <texture>Textures\\world.jpg</texture>
+      </model>
+    </models>
+  </cell1x1>
+</level>
