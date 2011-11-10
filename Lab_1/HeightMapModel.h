@@ -33,7 +33,7 @@ public:
 	Vertex3f* operator()( int i, int j );
 
 	// Loads the model from the image file
-	void load();
+	bool load();
 
 	// Rescales the model between min and max
 	void rescale( float minScale = 0.0f, float maxScale = 1.0f );

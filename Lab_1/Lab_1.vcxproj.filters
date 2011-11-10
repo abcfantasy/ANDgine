@@ -40,6 +40,9 @@
     <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{9a010c18-e3b9-4740-9bb6-9db48bbe28be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game Entities">
+      <UniqueIdentifier>{207ab33f-56a0-4e54-865a-790112ae93e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightingManager.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="HeightMapModel.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\Game Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

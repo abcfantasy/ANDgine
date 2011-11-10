@@ -17,25 +17,19 @@ SceneManager* SceneManager::instance() {
 };
 
 void SceneManager::initializeScene() {
-	int playerModelHandle = ResourceManager::instance()->addResource<Model>( "Models\\smiley.obj" );
-	Model *playerModel = (Model*)ResourceManager::instance()->getElement( playerModelHandle );
-	playerModel->setTexture( "Textures\\smile.jpg" );
-
-	playerNode_ = new PlayerNode( GameObject( playerModel ) );
+	Model *playerModel = ResourceManager::instance()->get<Model>( "Models\\smiley.obj" );
+	playerNode_ = new PlayerNode( new GameObject( playerModel ) );
 	this->sceneGraph_.addObject( playerNode_ );
 	
-	int planetHandle = ResourceManager::instance()->addResource<Model>( "Models\\planet3f.obj" );
-	Model *planet = (Model*)ResourceManager::instance()->getElement( planetHandle );
-	planet->setTexture( "Textures\\world.jpg" );
-	GameObjectNode *planetNode = new GameObjectNode( GameObject( planet ) );
+	Model *planet = ResourceManager::instance()->get<Model>( "Models\\planet3f.obj" );
+	GameObjectNode *planetNode = new GameObjectNode( new GameObject( planet ) );
 	planetNode->setAngleVelocity(0.0f, 20.0f, 0.0f );
 	this->sceneGraph_.addObject( planetNode );
 	
-	int terrainModelHandle = ResourceManager::instance()->addResource<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
-	HeightMapModel *terrainModel = (HeightMapModel*)ResourceManager::instance()->getElement( terrainModelHandle );
-	terrainModel->setTexture( "Textures\\dirt.tga" );
-	terrainModel->rescale( 0.0f, 15.0f );
-	GameObjectNode *terrainNode = new GameObjectNode( GameObject( terrainModel ) );
+	HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
+	terrain->setTexture( "Textures\\dirt.tga" );
+	terrain->rescale( 0.0f, 15.0f );
+	GameObjectNode *terrainNode = new GameObjectNode( new GameObject( terrain ) );
 	terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
 	this->sceneGraph_.addObject( terrainNode );

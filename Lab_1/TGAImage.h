@@ -20,7 +20,7 @@ typedef struct {
 
 // Class that loads and manages a TGA image
 // Since it's a resource, it will go through the Resource Manager
-class TGAImage : Resource {
+class TGAImage : public Resource {
 public:
 	unsigned int type_;
 	unsigned int width_;
@@ -36,7 +36,7 @@ public:
 
 	// Reads the image from the file
 	// This is called in the constructor
-	void load();
+	bool load();
 	// Initializes the image from the header
 	// This is called during load()
 	void initialize( TGAHeader *header );

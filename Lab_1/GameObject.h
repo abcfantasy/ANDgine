@@ -16,13 +16,16 @@ public:
 	GameObject() : model_( NULL ) {};
 	GameObject( GameObject &gameObject ) : model_( gameObject.getModel() ) {};
 	GameObject( Model *model ) : model_( model ) {};
-	~GameObject() {};
+	~GameObject();
 
 	// Getters and setters
 	inline Model* getModel() { return this->model_; };
 	inline void setModel( Model *model ) { this->model_ = model; };
-	// TODO: This will automatically get the model from the ResourceManager, once we can import from Maya
-	void setModel( char *modelName ) {};
+	// Loads the model from a file through the Resource Manager
+	void setModel( char *fileName );
+	
+	// Renders the object's model
+	void render();
 };
 
 #endif

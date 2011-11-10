@@ -27,10 +27,10 @@ void HeightMapModel::compile(){
 
 	// If we have a texture, we're using it, but if we don't we're not using it
 	// The code here may be duplicated but it works faster than it would be if we're making a check for every vertex
-	if ( this->textureHandle_ != Model::INVALID_HANDLE ) {
+	if ( this->texture_ != NULL ) {
 		int i, j;
 		Vertex3f *point;
-		glBindTexture( GL_TEXTURE_2D, ((TextureResource*)ResourceManager::instance()->getElement( this->textureHandle_ ))->getTexture()->TextureID );
+		glBindTexture( GL_TEXTURE_2D, this->texture_->getTexture()->TextureID );
 		for ( i = 0 ; i < this->length_ - 1; ++i ) {
 			glBegin(GL_TRIANGLE_STRIP);
 			for ( j = 0; j < this->width_; ++j ) {
@@ -133,11 +133,12 @@ void HeightMapModel::computeNormals() {
 		}
 };
 
-void HeightMapModel::load() {
+bool HeightMapModel::load() {
 	// Loading the image from the Resource Manager
-	unsigned int tgaImageHandle = ResourceManager::instance()->addResource<TGAImage>( this->filename_ );
-	TGAImage *tgaImage = (TGAImage*)ResourceManager::instance()->getElement( tgaImageHandle );
-	
+	TGAImage *tgaImage = ResourceManager::instance()->get<TGAImage>( this->filename_ );
+	if( tgaImage == NULL )
+		return false;
+
 	// The width and length of the model (in units) are the same as the values in pixels
 	this->width_ = tgaImage->width_;
 	this->length_ = tgaImage->height_;
@@ -180,12 +181,14 @@ void HeightMapModel::load() {
 			this->addVertex( point );
 		}
 	// We're done with the image now
-	ResourceManager::instance()->removeResource( tgaImageHandle );
+	ResourceManager::instance()->remove( tgaImage );
 	
 	// We need to calculate the normals for lighting
 	this->computeNormals();
 	// The rendering is done as a triangle strip
 	this->renderMethod_ = GL_TRIANGLE_STRIP;
+
+	return true;
 };
 
 // Rescales the model between min and max

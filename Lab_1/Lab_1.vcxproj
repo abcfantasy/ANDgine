@@ -73,6 +73,7 @@
     <ClCompile Include="ContainerNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectNode.cpp" />
     <ClCompile Include="HeightMapModel.cpp" />
     <ClCompile Include="InputManager.cpp">

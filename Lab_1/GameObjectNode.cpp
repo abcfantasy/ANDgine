@@ -1,6 +1,7 @@
 #include "GameObjectNode.h"
+#include "GameObject.h"
 
-GameObjectNode::GameObjectNode( GameObject gameObject ) {
+GameObjectNode::GameObjectNode( GameObject *gameObject ) {
 	this->gameObject_ = gameObject;
 	this->setPosition( 0.0f, 0.0f, 0.0f );
 	this->setRotation( 0.0f, 0.0f, 0.0f );
@@ -8,6 +9,10 @@ GameObjectNode::GameObjectNode( GameObject gameObject ) {
 	this->setAngleVelocity( 0.0f, 0.0f, 0.0f );
 	this->displayListId_ = SceneNode::INVALID_HANDLE;
 };
+
+GameObjectNode::~GameObjectNode() {
+	delete gameObject_;
+}
 
 void GameObjectNode::render( float deltaT ) {
 	this->translate( this->getVelocity(), deltaT );
@@ -17,10 +22,9 @@ void GameObjectNode::render( float deltaT ) {
 
 	glPushMatrix();
 	glCallList( this->getDisplayListId() );
-
-	Model* gameObjectModel = this->gameObject_.getModel();
-	if( gameObjectModel != NULL ) gameObjectModel->render();
-
+	
+	this->gameObject_->render();
+	
 	glPopMatrix();
 };
 

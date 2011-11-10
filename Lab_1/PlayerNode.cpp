@@ -1,7 +1,8 @@
 #include "PlayerNode.h"
+#include "GameObject.h"
 #include "InputManager.h"
 
-PlayerNode::PlayerNode( GameObject gameObject ) : GameObjectNode( gameObject ) {
+PlayerNode::PlayerNode( GameObject *gameObject ) : GameObjectNode( gameObject ) {
 	this->camera_.positionCamera(
 		this->position_[0],	this->position_[1] + 0.5f,	this->position_[2] + 3.0f,
 		this->position_[0],	this->position_[1],			this->position_[2]
@@ -23,8 +24,7 @@ void PlayerNode::render( float deltaT ) {
 	glPushMatrix();
 	glCallList( this->getDisplayListId() );
 
-	Model* gameObjectModel = this->gameObject_.getModel();
-	if( gameObjectModel != NULL ) gameObjectModel->render();
+	this->gameObject_->render();
 
 	glPopMatrix();
 };
