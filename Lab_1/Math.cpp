@@ -2,7 +2,7 @@
 #include <math.h>
 
 void Math::crossProduct( float *a, float *b, float *c, float *result ) {
-	float v1[3],v2[3];
+	/*float v1[3],v2[3];
 	
 	v1[0] = b[0] - a[0];
 	v1[1] = b[1] - a[1];
@@ -14,7 +14,16 @@ void Math::crossProduct( float *a, float *b, float *c, float *result ) {
 	
 	result[2] = v1[0] * v2[1] - v1[1] * v2[0];
 	result[0] = v1[1] * v2[2] - v1[2] * v2[1];
-	result[1] = v1[2] * v2[0] - v1[0] * v2[2];
+	result[1] = v1[2] * v2[0] - v1[0] * v2[2];*/
+	float r[3];
+	Math::crossProduct( a, b, r );
+	Math::crossProduct( r, c, result );
+}
+
+void Math::crossProduct( float *a, float *b, float *result ) {
+	result[0] = (a[1] * b[2]) - (a[2] * b[1]);
+	result[1] = (a[2] * b[0]) - (a[0] * b[2]);
+	result[2] = (a[0] * b[1]) - (a[1] * b[0]);
 }
 
 float Math::dotProduct( float *a, float *b ) {
@@ -57,4 +66,14 @@ bool Math::isNullVector( float *v ) {
 
 void Math::makeNullVector( float *v ) {
 	v[0] = v[1] = v[2] = 0.0f;
+}
+
+int Math::sign( float *v )
+{
+	if ( v < 0 )
+		return -1;
+	else if ( v > 0 )
+		return 1;
+	else
+		return 0;
 }

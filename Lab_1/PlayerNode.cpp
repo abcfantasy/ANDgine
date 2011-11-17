@@ -40,6 +40,12 @@ void PlayerNode::rotate( float rotation[3], float deltaT ) {
 };
 
 void PlayerNode::translate( float x, float y, float z, float deltaT ) {
+	// update bounding box
+	for ( int i = 0; i < this->boundingBox_.size(); i++ ) {
+		boundingBox_[i].setX( boundingBox_[i].getX() + ( x * deltaT / 1000.0f ) );
+		boundingBox_[i].setY( boundingBox_[i].getY() + ( y * deltaT / 1000.0f ) );
+		boundingBox_[i].setZ( boundingBox_[i].getZ() + ( z * deltaT / 1000.0f ) );
+	}
 	this->camera_.translate( x, y, z, deltaT );
 	SceneNode::translate( x, y, z, deltaT );
 };
