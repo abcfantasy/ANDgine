@@ -50,6 +50,13 @@ void PlayerNode::translate( float x, float y, float z, float deltaT ) {
 	SceneNode::translate( x, y, z, deltaT );
 };
 
+void PlayerNode::setY( float newY ) {
+	float deltaY = newY - this->position_[1];
+	this->position_[1] = newY;
+	this->camera_.changeY( deltaY );
+}
+
+
 void PlayerNode::translate( float position[3], float deltaT ) {
 	PlayerNode::translate( position[0], position[1], position[2], deltaT );
 };

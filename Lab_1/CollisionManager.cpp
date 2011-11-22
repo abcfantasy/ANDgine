@@ -3,7 +3,7 @@
 
 /*
  * <summary>Gets the singleton instane</summary>
- * <returns>The instance of LightingManager</returns>
+ * <returns>The instance of CollisionManager</returns>
  */
 CollisionManager* CollisionManager::instance()
 {
@@ -40,12 +40,6 @@ void CollisionManager::support( std::vector<float*> shape1Vertices, std::vector<
 	Math::subtract( p1, p2, result );
 	// result is now a point in minkowski space on the edge of the minkowski difference
 }
-
-void CollisionManager::tripleProduct( float* v1, float* v2, float* v3, float* result )
-{
-	Math::crossProduct( v1, v2, v3, result );
-}
-
 bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 {
 	// get the last point added to the simplex
@@ -60,15 +54,6 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 		// compute ab
 		float ab[3];
 		Math::subtract( b, a, ab );
-		/*
-		// get the perpendicular/normal to AB in the direction of the origin
-		float* abNormal = tripleProduct( ab, ao, ab );
-		// set the direction to abNormal
-		d[0] = abNormal[0];
-		d[1] = abNormal[1];
-		d[2] = abNormal[2];
-		*/
-		// START MOD
 		if ( Math::dotProduct( ab, ao ) > 0 )
 		{
 			float dir[3];
@@ -82,7 +67,7 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 			d[0] = ao[0];
 			d[1] = ao[1];
 			d[2] = ao[2];
-		} // END MOD
+		}
 	}
 	// if simplex is triangle
 	else if ( s->size() == 3 ) {
@@ -96,38 +81,6 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 		Math::subtract( c, a, ac );
 		float abc[3];
 		Math::crossProduct( ab, ac, abc );
-		/*
-		// compute the normals
-		float* abNormal = tripleProduct( ac, ab, ab );
-		float* acNormal = tripleProduct( ab, ac, ac );
-		// is th origin in R4?
-		if ( Math::dotProduct( abNormal, ao ) > 0 ) {
-			// remove point c
-			(*s)[0] = (*s)[1];
-			(*s)[1] = (*s)[2];
-			s->pop_back();
-			// set the new direction to abNormal
-			d[0] = abNormal[0];
-			d[1] = abNormal[1];
-			d[2] = abNormal[2];
-		} 
-		else {
-			// is the origin in R3?
-			if ( Math::dotProduct( acNormal, ao ) > 0 ) {
-				// remove point b
-				(*s)[1] = (*s)[2];
-				s->pop_back();
-				// set the new direction to acNormal
-				d[0] = acNormal[0];
-				d[1] = acNormal[1];
-				d[2] = acNormal[2];
-			} 
-			else {
-				// otherwise we know its in R5 so we can return true
-				return true;
-			}
-		}
-		*/
 		// START MOD
 		float check[3];
 		Math::crossProduct( abc, ac, check );
@@ -222,7 +175,6 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 				}
 			}
 		}
-		// END MOD
 	}
 	// else if simplex is tetrahedon
 	else {
@@ -324,27 +276,6 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 
 bool CollisionManager::GJKCollide( std::vector<Vertex3f>* shape1, std::vector<Vertex3f>* shape2 )
 {
-	/*
-	std::vector<Vertex3f*> shape1Test;
-	std::vector<Vertex3f*> shape2Test;
-	shape1Test.push_back(new Vertex3f(0, 0, 0)); 
-	shape1Test.push_back(new Vertex3f(1, 0, 0)); 
-	shape1Test.push_back(new Vertex3f(1, 1, 0)); 
-	shape1Test.push_back(new Vertex3f(0, 1, 0)); 
-	shape1Test.push_back(new Vertex3f(0, 0, -1)); 
-	shape1Test.push_back(new Vertex3f(1, 0, -1)); 
-	shape1Test.push_back(new Vertex3f(1, 1, -1)); 
-	shape1Test.push_back(new Vertex3f(0, 1, -1)); 
-
-	shape2Test.push_back(new Vertex3f(0.5f, 0, 0)); 
-	shape2Test.push_back(new Vertex3f(1.5f, 0, 0)); 
-	shape2Test.push_back(new Vertex3f(1.5f, 1, 0)); 
-	shape2Test.push_back(new Vertex3f(0.5f, 1, 0)); 
-	shape2Test.push_back(new Vertex3f(0.5f, 0, -1)); 
-	shape2Test.push_back(new Vertex3f(1.5f, 0, -1)); 
-	shape2Test.push_back(new Vertex3f(1.5f, 1, -1)); 
-	shape2Test.push_back(new Vertex3f(0.5f, 1, -1));
-	*/
 	// change vector3f to float array
 	std::vector<float*> shape1Vertices;
 	std::vector<float*> shape2Vertices;
@@ -352,25 +283,6 @@ bool CollisionManager::GJKCollide( std::vector<Vertex3f>* shape1, std::vector<Ve
 		shape1Vertices.push_back( i->getPosition() );
 	for ( std::vector<Vertex3f>::iterator i = shape2->begin(); i != shape2->end(); ++i )
 		shape2Vertices.push_back( i->getPosition() );
-	
-
-	// TESTING
-	for ( int i = 0; i < shape1Vertices.size(); i++ )
-	{
-		float* v = shape1Vertices[i];
-		float x = v[0];
-		float y = v[1];
-		float z = v[2];
-		float dummy = v[2];
-	}
-	for ( int i = 0; i < shape2Vertices.size(); i++ )
-	{
-		float* v = shape2Vertices[i];
-		float x = v[0];
-		float y = v[1];
-		float z = v[2];
-		float dummy = v[2];
-	}
 
 	// create simplex queue
 	std::vector<float*> simplexList;

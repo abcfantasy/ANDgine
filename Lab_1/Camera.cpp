@@ -45,6 +45,11 @@ void Camera::translate( float x, float y, float z, float deltaT ) {
 	this->view_[2] += z * deltaT / 1000.0f;
 };
 
+void Camera::changeY( float deltaY ) {
+	this->position_[1] += deltaY;
+	this->view_[1] += deltaY;
+}
+
 void Camera::translate( float position[3], float deltaT ) {
 	this->translate( position[0], position[1], position[2], deltaT );
 };

@@ -14,6 +14,7 @@
 #include "PlayerNode.h"
 
 #include "CollisionManager.h"
+#include "Math.h"
 
 SceneManager* SceneManager::instance() {
 	static SceneManager sm;
@@ -24,6 +25,7 @@ SceneManager* SceneManager::instance() {
 Model *pyramid = new Model();
 Model *pyramid2 = new Model();
 GameObjectNode *pyramid2Node;
+GameObjectNode *terrainNode;
 
 void SceneManager::initializeScene() {
 	pyramid->setTexture( "Textures\\stone54.jpg" );
@@ -177,10 +179,11 @@ void SceneManager::initializeScene() {
 	this->sceneGraph_.addObject( pyramid2Node );
 	//END TEST
 
+	
 	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\hildebrand.tga", 0.0f, 15.0f );
 	terrain->setTexture( "Textures\\dirt.tga" );
 	
-	GameObjectNode *terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
+	terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
 	terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
 	this->sceneGraph_.addObject( terrainNode );
@@ -200,7 +203,14 @@ void SceneManager::renderScene() {
 
 	this->sceneGraph_.render( deltaT );
 
+	// check heightmap
+	float pos[3];
+	//Math::subtract( playerNode_->getPosition(), terrainNode->getPosition(), pos );
+	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pos[0], pos[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
+	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
+	playerNode_->setY(  (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() );
 	// TESTING COLLISION
+	/*
 	if ( playerNode_ != NULL && pyramid2Node != NULL )
 	{
 	if ( CollisionManager::instance()->GJKCollide( playerNode_->getBoundingBox(), pyramid2Node->getBoundingBox() ) )
@@ -208,7 +218,7 @@ void SceneManager::renderScene() {
 		// do something to show that two pyramids made BOOM
 		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 1.0f, 0.0f );
 	}
-	}
+	}*/
 
 	SDL_GL_SwapBuffers();
 };
