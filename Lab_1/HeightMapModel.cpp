@@ -18,8 +18,8 @@ HeightMapModel::HeightMapModel( char *fileName, float minScale, float maxScale )
 	float textureIncrementX = 1.0f / this->width_;
 	float textureIncrementZ = 1.0f / this->length_;
 	// The model will be centered around the origin
-	float xOffset = -(this->width_ / 2.0f);
-	float yOffset = -(this->length_ / 2.0f);
+	float xOffset = 0; //-(this->width_ / 2.0f);
+	float yOffset = 0; //-(this->length_ / 2.0f);
 
 	// This calculates the amplitude of the scaling
 	float amp = this->maxScale_ - this->minScale_;
@@ -34,7 +34,7 @@ HeightMapModel::HeightMapModel( char *fileName, float minScale, float maxScale )
 		for (int j = 0;j < this->width_; ++j, pixel += tgaImage->bytesPerPx_ ) {
 			// The X and Z positions depend on the pixel we're at
 			point.setX( float(j) + xOffset );
-			point.setZ( float(i) + xOffset );
+			point.setZ( float(i) + yOffset );
 			// The Y position scales with the last component of the pixel
 			// And is interpolated using the amplitude
 			point.setY( amp * ( tgaImage->image_[pixel + ( tgaImage->bytesPerPx_ - 1 ) ] / 256.0f ) );
@@ -63,7 +63,7 @@ HeightMapModel::HeightMapModel( char *fileName, float minScale, float maxScale )
 // Easy access to a particular vertex
 // heightmap( i, j ) = the vertex at position i,j
 Vertex3f* HeightMapModel::operator()( int i, int j ) {
-	return &this->vertices_[ i * this->width_ + j ];
+	return &this->vertices_[ j * this->width_ + i ];
 };
 
 // Overrides the method from Model, because we're rendering with a triangle strip and in a different order

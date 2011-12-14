@@ -184,10 +184,10 @@ void SceneManager::initializeScene() {
 	terrain->setTexture( "Textures\\dirt.tga" );
 	
 	terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
-	terrainNode->translate( 25.0f, -15.0f, 25.0f );
+	//terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
 	this->sceneGraph_.addObject( terrainNode );
-	this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
+	//this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
 
 	InputManager::instance()->addKeyDownEvent( &SceneManager::keyDown );
 	InputManager::instance()->addKeyUpEvent( &SceneManager::keyUp );
@@ -208,7 +208,8 @@ void SceneManager::renderScene() {
 	//Math::subtract( playerNode_->getPosition(), terrainNode->getPosition(), pos );
 	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pos[0], pos[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
 	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
-	playerNode_->setY(  (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() );
+	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0] /*+ 25.0f*/, playerNode_->getPosition()[2] /*+ 25.0f*/)->getY() +
+	  0.55f );
 	// TESTING COLLISION
 	/*
 	if ( playerNode_ != NULL && pyramid2Node != NULL )

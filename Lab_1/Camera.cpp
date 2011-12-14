@@ -46,8 +46,8 @@ void Camera::translate( float x, float y, float z, float deltaT ) {
 };
 
 void Camera::changeY( float deltaY ) {
-	this->position_[1] += deltaY;
-	this->view_[1] += deltaY;
+	this->position_[1] = deltaY;
+	this->view_[1] = deltaY - 0.5f;
 }
 
 void Camera::translate( float position[3], float deltaT ) {
@@ -55,5 +55,5 @@ void Camera::translate( float position[3], float deltaT ) {
 };
 
 void Camera::render() {
-	gluLookAt( position_[0], position_[1], position_[2], view_[0], view_[1], view_[2], 0.0f, 1.0f, 0.0f );
+	gluLookAt( position_[0], position_[1], position_[2], view_[0], position_[1] + 0.5f/*view_[1]*/, view_[2], 0.0f, 1.0f, 0.0f );
 };
