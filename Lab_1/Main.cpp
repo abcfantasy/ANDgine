@@ -11,6 +11,8 @@
 #include "InputManager.h"
 #include "LightingManager.h"
 
+#include "SoundManager.h"
+
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
 #define SCREEN_HEIGHT 480
@@ -93,6 +95,9 @@ void initializeManagers() {
 	LightingManager::instance()->setGlobalAmbient( ambientLight );
 
 	SceneManager::instance()->initializeScene();
+
+	//SoundManager::instance()->InitializeSound();
+	//SoundManager::instance()->LoadMusic( "C:\\ff2prlde.mid" );
 };
 
 int main( int argc, char **argv )
@@ -107,7 +112,7 @@ int main( int argc, char **argv )
 	const SDL_VideoInfo *videoInfo;
 
 	/* initialize SDL */
-	if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if ( SDL_Init( SDL_INIT_AUDIO | SDL_INIT_VIDEO ) < 0 )
 	{
 		fprintf( stderr, "Video initialization failed: %s\n",
 			 SDL_GetError( ) );
@@ -167,6 +172,9 @@ int main( int argc, char **argv )
 	SDL_ShowCursor( FALSE );
 	SDL_WarpMouse( 320, 240 );
 
+	// start music
+	//SoundManager::instance()->PlayMusic();
+
 	/* wait for events */ 
 	while ( !done )
 	{
@@ -204,6 +212,9 @@ int main( int argc, char **argv )
 		/* draw the scene */
 		SceneManager::instance()->renderScene();
 	}
+
+	// free music
+	//SoundManager::instance()->FreeResources();
 
 	/* clean ourselves up and exit */
 	Quit( 0 );
