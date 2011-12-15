@@ -14,6 +14,8 @@
 #include "CollisionManager.h"
 #include "Math.h"
 
+#include "SoundManager.h"
+
 SceneManager* SceneManager::instance() {
 	static SceneManager sm;
 	return &sm;
@@ -66,6 +68,10 @@ void SceneManager::renderScene() {
 //	terrainNode->worldToModel( playerNode_->getPosition(), pos );
 //	playerNode_->setY( (*((HeightMapModel*)terrainNode->getGameObject()->getModel()))( pos[2], pos[0] )->getY() );
 	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() + 0.5f );
+
+	// change ambient sound
+	SoundManager::instance()->ChangeAmbientEffect( playerNode_->getPosition(), playerNode_->getRotation()[1] );
+
 	// TESTING COLLISION
 	/*
 	if ( playerNode_ != NULL && pyramid2Node != NULL )
@@ -88,6 +94,7 @@ void SceneManager::keyDown( SDLKey key, SDLMod mod )
 	if ( key == SDLK_DOWN )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f ); }
 	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
 	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
+	if ( key == SDLK_SPACE ) { SoundManager::instance()->PlaySound( "explosion" ); }
 }
 
 void SceneManager::keyUp( SDLKey key, SDLMod mod )

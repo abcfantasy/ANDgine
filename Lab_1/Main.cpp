@@ -96,8 +96,14 @@ void initializeManagers() {
 
 	SceneManager::instance()->initializeScene();
 
-	//SoundManager::instance()->InitializeSound();
-	//SoundManager::instance()->LoadMusic( "C:\\ff2prlde.mid" );
+	SoundManager::instance()->InitializeSound();
+	SoundManager::instance()->LoadMusic( "Title.mp3" );
+	SoundManager::instance()->LoadSound( "explode7.wav", "explosion" );
+	float* soundPos = new float[3];
+	soundPos[0] = 50.0f;
+	soundPos[1] = 0.0f;
+	soundPos[2] = 50.0f;
+	SoundManager::instance()->LoadAmbientSound( "Cuckoo2.wav", soundPos );
 };
 
 int main( int argc, char **argv )
@@ -173,12 +179,17 @@ int main( int argc, char **argv )
 	SDL_WarpMouse( 320, 240 );
 
 	// start music
-	//SoundManager::instance()->PlayMusic();
-
+	SoundManager::instance()->PlayMusic();
+	SoundManager::instance()->PlayAmbientSound();
 	/* wait for events */ 
 	while ( !done )
 	{
+		// handle mouse input
 		InputManager::instance()->handleMouse();
+
+		// handle background music
+		//if ( !SoundManager::instance()->IsMusicPlaying() )
+		//	SoundManager::instance()->PlayMusic();
 		
 		/* handle the events in the queue */
 		while ( SDL_PollEvent( &event ) )
@@ -214,7 +225,7 @@ int main( int argc, char **argv )
 	}
 
 	// free music
-	//SoundManager::instance()->FreeResources();
+	SoundManager::instance()->FreeResources();
 
 	/* clean ourselves up and exit */
 	Quit( 0 );
