@@ -96,6 +96,9 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\Game Entities</Filter>
     </ClCompile>
+    <ClCompile Include="SkyBoxModel.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputManager.h">
@@ -147,6 +150,9 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="HeightMapModel.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxModel.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,13 +14,9 @@ void PlayerNode::render( float deltaT ) {
 
 	InputManager::instance()->getMouseAngle( &angle_x, &angle_y );
 	this->rotate( angle_x, angle_y, 0.0f );
-
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
+	this->applyVelocity( deltaT );
 	this->camera_.render();
-
 	if( this->displayListId_ == SceneNode::INVALID_HANDLE ) this->compile();
-
 	glPushMatrix();
 	glCallList( this->getDisplayListId() );
 
@@ -40,9 +36,22 @@ void PlayerNode::rotate( float rotation[3], float deltaT ) {
 };
 
 void PlayerNode::translate( float x, float y, float z, float deltaT ) {
+	// update bounding box
+	for ( unsigned int i = 0; i < this->boundingBox_.size(); i++ ) {
+		boundingBox_[i].setX( boundingBox_[i].getX() + ( x * deltaT / 1000.0f ) );
+		boundingBox_[i].setY( boundingBox_[i].getY() + ( y * deltaT / 1000.0f ) );
+		boundingBox_[i].setZ( boundingBox_[i].getZ() + ( z * deltaT / 1000.0f ) );
+	}
 	this->camera_.translate( x, y, z, deltaT );
 	SceneNode::translate( x, y, z, deltaT );
 };
+
+void PlayerNode::setY( float newY ) {
+	float deltaY = newY - this->position_[1];
+	this->position_[1] = newY;
+	this->camera_.changeY( newY );
+}
+
 
 void PlayerNode::translate( float position[3], float deltaT ) {
 	PlayerNode::translate( position[0], position[1], position[2], deltaT );

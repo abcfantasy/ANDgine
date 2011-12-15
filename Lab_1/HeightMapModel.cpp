@@ -7,8 +7,12 @@
 // Easy access to a particular vertex
 // heightmap( i, j ) = the vertex at position i,j
 Vertex3f* HeightMapModel::operator()( int i, int j ) {
-	return &this->vertices_[ i * this->width_ + j ];
+	return &this->vertices_[ j * this->width_ + i ];
 };
+
+/*Vertex3f* HeightMapModel::operator()( float x, float y ) {
+	
+};*/
 
 // Overrides the method from Model, because we're rendering with a triangle strip and in a different order
 void HeightMapModel::compile(){
@@ -147,8 +151,8 @@ bool HeightMapModel::load() {
 	float textureIncrementX = 1.0f / this->width_;
 	float textureIncrementZ = 1.0f / this->length_;
 	// The model will be centered around the origin
-	float xOffset = -(this->width_ / 2.0f);
-	float yOffset = -(this->length_ / 2.0f);
+	float xOffset = 0.0f;//-(this->width_ / 2.0f);
+	float yOffset = 0.0f;//-(this->length_ / 2.0f);
 
 	// This calculates the amplitude of the scaling
 	float amp = this->maxScale_ - this->minScale_;

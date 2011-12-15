@@ -30,6 +30,7 @@ public:
 	// Getters and setters
 	inline GLuint getRenderMethod() { return this->renderMethod_; };
 	inline void setRenderMethod( GLuint renderMethod ) { this->renderMethod_ = renderMethod; };
+	inline std::vector<Vertex3f> getVertices() { return this->vertices_; };
 
 	// Getter and setter for the texture handle
 	inline TextureResource* getTexture() { return this->texture_; };

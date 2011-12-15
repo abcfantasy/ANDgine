@@ -96,6 +96,7 @@
     <ClCompile Include="SceneNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
+    <ClCompile Include="SkyBoxModel.cpp" />
     <ClCompile Include="TextureResource.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -119,6 +120,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="SkyBoxModel.h" />
     <ClInclude Include="TextureResource.h" />
     <ClInclude Include="TGAImage.h" />
     <ClInclude Include="Vertex3f.h" />

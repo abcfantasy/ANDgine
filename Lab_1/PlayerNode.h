@@ -28,6 +28,8 @@ public:
 	void translate( float x, float y, float z, float deltaT = 1000.0f );
 	void translate( float position[3], float deltaT = 1000.0f );
 
+	void PlayerNode::setY( float newY );
+
 	// Overriding the render function to properly adjust for mouse movement and render the camera as well
 	void render( float deltaT );
 };
