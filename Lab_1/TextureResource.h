@@ -6,7 +6,7 @@
 #include "SDL_opengl.h"
 
 // Define Interface Data Types / Structures
-//
+
 typedef enum {
 	txUnknown	= 0,	// images
 	txBmp		= 1,
@@ -51,7 +51,6 @@ typedef struct {
 } glTexturCordTable;
 
 // Define Private Structurs
-//
 
 // Header
 typedef struct {
@@ -83,11 +82,10 @@ private:
 	GLubyte				m_GreenAlphaMatch;
 	GLubyte 			m_BlueAlphaMatch;
 
-	int TextureResource::LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture);
+	int LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture);
 	int BuildTexture(char *szPathName, glTexture *pglTexture);
 	int GenerateTexture(glTexture *pglTexture, GLubyte *pImgData);
 	void ExtensionFromFilename(char *szFileName, char *szExtension);
-	//char *TextureResource::ExtensionFromFilename(char *szFileName/*, char szExtension[]*/);
 
 public:
 
@@ -102,6 +100,7 @@ public:
 	void SetTextureFilter(eglTexFilterType type);
 
 	void FreeTexture(glTexture *pglTexture);
+	bool load() { return true; };
 };
 
 #endif

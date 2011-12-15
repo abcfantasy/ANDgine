@@ -1,8 +1,9 @@
 #ifndef _SCENEMANAGER_H_
 #define _SCENEMANAGER_H_
 
+class PlayerNode;
+
 #include "ContainerNode.h"
-#include "PlayerNode.h"
 #include "SDL.h"
 
 // Class that contains information related to the scenegraph and to rendering

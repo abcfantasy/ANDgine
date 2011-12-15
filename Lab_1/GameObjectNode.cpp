@@ -1,6 +1,8 @@
 #include "GameObjectNode.h"
+#include "GameObject.h"
+#include "Math.h"
 
-GameObjectNode::GameObjectNode( GameObject gameObject ) {
+GameObjectNode::GameObjectNode( GameObject *gameObject ) {
 	this->gameObject_ = gameObject;
 	this->setPosition( 0.0f, 0.0f, 0.0f );
 	this->setRotation( 0.0f, 0.0f, 0.0f );
@@ -9,14 +11,14 @@ GameObjectNode::GameObjectNode( GameObject gameObject ) {
 	this->displayListId_ = SceneNode::INVALID_HANDLE;
 
 	// create bounding box
-	std::vector<Vertex3f> modelVertices = gameObject.getModel()->getVertices();
+	std::vector<Vertex3f> modelVertices = gameObject->getModel()->getVertices();
 	float minX = modelVertices[0].getX();
 	float maxX = modelVertices[0].getX();
 	float minY = modelVertices[0].getY();
 	float maxY = modelVertices[0].getY();
 	float minZ = modelVertices[0].getZ();
 	float maxZ = modelVertices[0].getZ();
-	for ( int i = 1; i < modelVertices.size(); i++ ) {
+	for ( unsigned int i = 1; i < modelVertices.size(); i++ ) {
 		// x
 		if ( modelVertices[i].getX() < minX )
 			minX = modelVertices[i].getX();
@@ -46,7 +48,7 @@ GameObjectNode::GameObjectNode( GameObject gameObject ) {
 
 void GameObjectNode::translate( float x, float y, float z, float deltaT ) {
 	// update bounding box
-	for ( int i = 0; i < this->boundingBox_.size(); i++ ) {
+	for ( unsigned int i = 0; i < this->boundingBox_.size(); i++ ) {
 		boundingBox_[i].setX( boundingBox_[i].getX() + ( x * deltaT / 1000.0f ) );
 		boundingBox_[i].setY( boundingBox_[i].getY() + ( y * deltaT / 1000.0f ) );
 		boundingBox_[i].setZ( boundingBox_[i].getZ() + ( z * deltaT / 1000.0f ) );
@@ -58,19 +60,18 @@ void GameObjectNode::translate( float position[3], float deltaT ) {
 	GameObjectNode::translate( position[0], position[1], position[2], deltaT );
 };
 
+GameObjectNode::~GameObjectNode() {
+	delete gameObject_;
+}
 
 void GameObjectNode::render( float deltaT ) {
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
-
+	this->applyVelocity( deltaT );
 	if( this->displayListId_ == SceneNode::INVALID_HANDLE ) this->compile();
-
 	glPushMatrix();
 	glCallList( this->getDisplayListId() );
-
-	Model* gameObjectModel = this->gameObject_.getModel();
-	if( gameObjectModel != NULL ) gameObjectModel->render();
-
+	
+	this->gameObject_->render();
+	
 	glPopMatrix();
 };
 

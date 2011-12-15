@@ -2,11 +2,6 @@
 #include "SDL_opengl.h"
 #include <stdio.h>
 
-// Loads the image from a file
-TGAImage::TGAImage( const int handle, char *fileName ) : Resource( handle, fileName ) {
-	this->load();
-};
-
 // Frees the memory
 TGAImage::~TGAImage() {
 	if( this->image_ != NULL ) {
@@ -26,7 +21,7 @@ bool TGAImage::load() {
 
 	if(fread(&header, sizeof(TGAHeader), 1, fTGA) == 0) {		// Attempt to read 12 byte header from file
 		if(fTGA != NULL) fclose(fTGA);							// Check to see if file is still open. If it is, close it
-		return false;											// Exit function
+		return false;													// Exit function
 	}
 
 	// Set the header info
@@ -101,7 +96,7 @@ bool TGAImage::load() {
 				if(fread(colorbuffer, 1, this->bytesPerPx_, fTGA) != this->bytesPerPx_) {	// Attempt to read following color values
 					if(fTGA != NULL) fclose(fTGA);						// If thereis a file open
 					if(colorbuffer != NULL) delete[] colorbuffer;		// If there is data in the colorbuffer
-					return false;										// return failed
+					return false;										// Return failed
 				}
 
 				for(short counter = 0; counter < chunkheader; counter++) {	// copy the color into the image data as many times as dictated by the header
@@ -112,7 +107,7 @@ bool TGAImage::load() {
 					if(this->bytesPerPx_ == 4)							// If TGA images is 32 bpp
 						this->image_[currentbyte + 3] = colorbuffer[3];	// Copy 4th byte
 
-					currentbyte += this->bytesPerPx_;				// Increase current byte by the number of bytes per pixel
+					currentbyte += this->bytesPerPx_;					// Increase current byte by the number of bytes per pixel
 					currentpixel++;										// Increase pixel count by 1
 
 					if(currentpixel > pixelcount) {						// Make sure we havent written too many pixels

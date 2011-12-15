@@ -87,3 +87,40 @@ void SceneNode::translate( float x, float y, float z, float deltaT ) {
 void SceneNode::translate( float position[3], float deltaT ) {
 	this->translate( position[0], position[1], position[2], deltaT );
 };
+
+void SceneNode::worldToModel( float x, float y, float z, float result[4], float type ) {
+	float v[4];
+	v[0] = x;
+	v[1] = y;
+	v[2] = z;
+	v[3] = 0.0f;
+	this->worldToModel( v, result, type );
+};
+
+void SceneNode::worldToModel( float coordinates[3], float result[4], float type ) {
+	float rotation[16];
+	float translation[16];
+
+	result[0] = coordinates[0];
+	result[1] = coordinates[1];
+	result[2] = coordinates[2];
+	result[3] = type;
+
+	Math::identityMatrix( rotation );
+	Math::rotationMatrix( this->rotation_[0], this->rotation_[1], this->rotation_[2], rotation );
+	Math::multiplyVector( result, rotation );
+
+	//Math::identityMatrix( translation );
+	//Math::translationMatrix( this->position_[0], this->position_[1], this->position_[2], translation );
+	//Math::multiplyVector( result, translation );
+};
+
+void SceneNode::applyVelocity( float deltaT ) {
+	if( !Math::isNullVector( this->getVelocity() ) ) {
+		float modelSpaceVelocity[4];
+		this->worldToModel( this->getVelocity(), modelSpaceVelocity, MATH_VECTOR );
+		this->translate( modelSpaceVelocity, deltaT );
+	}
+	if( !Math::isNullVector( this->getAngleVelocity() ) )
+		this->rotate( this->getAngleVelocity(), deltaT );
+};

@@ -3,9 +3,12 @@
 
 #include <vector>
 #include "SDL_opengl.h"
+#include "Resource.h"
+#include "TextureResource.h"
 #include "Vertex3f.h"
 
-class Model {
+// Class for storing and displaying models
+class Model : public Resource {
 protected:
 	// The vertices that make up the model
 	std::vector<Vertex3f> vertices_;
@@ -14,15 +17,13 @@ protected:
 	// The rendering method; should be an OpenGL constant; the default is GL_TRIANGLES
 	GLuint renderMethod_;
 	// The texture handle from the Resource Manager
-	int textureHandle_;
+	TextureResource *texture_;
 
 public:
 	static const GLuint INVALID_HANDLE = 0xFFFFFFFF;
 	
-	// Basic constructor; no texture Handle
-	Model() : textureHandle_( Model::INVALID_HANDLE ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
-	// Constructs a model and gives it a texture Handle as well
-	Model( int textureHandle ) : textureHandle_( textureHandle ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
+	// Basic constructor with Resource data; no texture Handle
+	Model( const unsigned int handle, char *fileName ) : Resource( handle, fileName ), texture_( NULL ), displayListId_( Model::INVALID_HANDLE ), renderMethod_( GL_TRIANGLES ) {};
 	// Basic destructor; releases a texture if it has any
 	~Model();
 
@@ -32,8 +33,8 @@ public:
 	inline std::vector<Vertex3f> getVertices() { return this->vertices_; };
 
 	// Getter and setter for the texture handle
-	inline GLuint getTextureHandle() { return this->textureHandle_; };
-	inline void setTextureHandle( int textureHandle ) { this->textureHandle_ = textureHandle; };
+	inline TextureResource* getTexture() { return this->texture_; };
+	inline void setTexture( TextureResource *texture ) { this->texture_ = texture; };
 	// Loads a texture through the Resource Manager
 	void setTexture( char *fileName );
 	
@@ -47,6 +48,8 @@ public:
 	virtual void compile();
 	// Calls the display list to render the model
 	void render();
+	// Loads the model from its OBJ file
+	bool load();
 };
 
 #endif

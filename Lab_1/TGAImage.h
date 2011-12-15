@@ -20,7 +20,7 @@ typedef struct {
 
 // Class that loads and manages a TGA image
 // Since it's a resource, it will go through the Resource Manager
-class TGAImage : Resource {
+class TGAImage : public Resource {
 public:
 	unsigned int type_;
 	unsigned int width_;
@@ -30,7 +30,7 @@ public:
 	GLubyte *image_;
 
 	// Loads the image from a file
-	TGAImage( const int handle, char *fileName );
+	TGAImage( const int handle, char *fileName ) : Resource( handle, fileName ) {};
 	// Frees the memory
 	~TGAImage();
 

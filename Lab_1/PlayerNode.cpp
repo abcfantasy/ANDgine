@@ -1,7 +1,8 @@
 #include "PlayerNode.h"
+#include "GameObject.h"
 #include "InputManager.h"
 
-PlayerNode::PlayerNode( GameObject gameObject ) : GameObjectNode( gameObject ) {
+PlayerNode::PlayerNode( GameObject *gameObject ) : GameObjectNode( gameObject ) {
 	this->camera_.positionCamera(
 		this->position_[0],	this->position_[1] + 0.5f,	this->position_[2] + 3.0f,
 		this->position_[0],	this->position_[1],			this->position_[2]
@@ -13,18 +14,13 @@ void PlayerNode::render( float deltaT ) {
 
 	InputManager::instance()->getMouseAngle( &angle_x, &angle_y );
 	this->rotate( angle_x, angle_y, 0.0f );
-
-	this->translate( this->getVelocity(), deltaT );
-	this->rotate( this->getAngleVelocity(), deltaT );
+	this->applyVelocity( deltaT );
 	this->camera_.render();
-
 	if( this->displayListId_ == SceneNode::INVALID_HANDLE ) this->compile();
-
 	glPushMatrix();
 	glCallList( this->getDisplayListId() );
 
-	Model* gameObjectModel = this->gameObject_.getModel();
-	if( gameObjectModel != NULL ) gameObjectModel->render();
+	this->gameObject_->render();
 
 	glPopMatrix();
 };
@@ -41,7 +37,7 @@ void PlayerNode::rotate( float rotation[3], float deltaT ) {
 
 void PlayerNode::translate( float x, float y, float z, float deltaT ) {
 	// update bounding box
-	for ( int i = 0; i < this->boundingBox_.size(); i++ ) {
+	for ( unsigned int i = 0; i < this->boundingBox_.size(); i++ ) {
 		boundingBox_[i].setX( boundingBox_[i].getX() + ( x * deltaT / 1000.0f ) );
 		boundingBox_[i].setY( boundingBox_[i].getY() + ( y * deltaT / 1000.0f ) );
 		boundingBox_[i].setZ( boundingBox_[i].getZ() + ( z * deltaT / 1000.0f ) );

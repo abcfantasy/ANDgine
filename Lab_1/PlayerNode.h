@@ -1,9 +1,9 @@
 #ifndef _PLAYERNODE_H_
 #define _PLAYERNODE_H_
 
+class GameObject;
 #include "Camera.h"
 #include "GameObjectNode.h"
-#include "GameObject.h"
 
 // The PlayerNode contains the player's object (as a GameObject) and camera information (as a CameraNode)
 class PlayerNode : public GameObjectNode {
@@ -13,7 +13,7 @@ private:
 
 public:
 	// Constructor is the same as a GameObjectNode
-	PlayerNode( GameObject gameObject );
+	PlayerNode( GameObject *gameObject );
 	// Basic destructor
 	~PlayerNode() {};
 

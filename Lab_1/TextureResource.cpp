@@ -4,7 +4,6 @@
 
 #include <olectl.h>											// Header File For The OLE Controls Library
 
-
 TextureResource::TextureResource(const int handle, char* szFileName )
 		: Resource(handle, szFileName)
 {
@@ -127,8 +126,8 @@ void TextureResource::SetTextureFilter(eglTexFilterType type)
 //
 int TextureResource::LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture)
 {
-	unsigned int tgaImageHandle = ResourceManager::instance()->addResource<TGAImage>( pszFileName );
-	TGAImage *tgaImage = (TGAImage*)ResourceManager::instance()->getElement( tgaImageHandle );
+	TGAImage *tgaImage = ResourceManager::instance()->get<TGAImage>( pszFileName );
+	if( tgaImage == NULL ) return false;
 	GLint	glMaxTexDim;	// Holds Maximum Texture Size
 
 	pglTexture->Width  = tgaImage->width_;
@@ -190,7 +189,7 @@ int TextureResource::LoadTGAFromDisk(char *pszFileName, glTexture *pglTexture)
 	// generate the texture using the filtering model selected
 	(void)GenerateTexture(pglTexture, (BYTE *)tgaImage->image_);
 
-	ResourceManager::instance()->removeResource( tgaImageHandle );
+	ResourceManager::instance()->remove( tgaImage );
 
 	return true;	// All went well, continue on
 }

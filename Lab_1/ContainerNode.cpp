@@ -1,4 +1,5 @@
 #include "ContainerNode.h"
+#include "Math.h"
 
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -39,11 +40,8 @@ void ContainerNode::compile() {
 };
 
 void ContainerNode::render( float deltaT ) {
-	this->translate( this->velocity_, deltaT );
-	this->rotate( this->angle_velocity_, deltaT );
-
+	this->applyVelocity( deltaT );
 	if( this->displayListId_ == SceneNode::INVALID_HANDLE )	this->compile();
-
 	glPushMatrix();
 	glCallList( this->displayListId_ );
 

@@ -13,14 +13,14 @@ ResourceManager* ResourceManager::instance() {
 };
 
 // returns a resource by filename
-Resource* ResourceManager::getElement( char* filePath ) {
+Resource* ResourceManager::find( char* filePath ) {
 	// check that name and path are valid, and list is not empty
 	if ( filePath != NULL || this->list_.empty() )
 		return NULL;
 
 	// iterate through the list
 	for ( std::vector<Resource*>::iterator i = this->list_.begin(); i != this->list_.end(); i++ ) {
-		if ( (*i) != NULL && (*i)->getFilename() == filePath/*&& (*i)->getPath() == path*/ )
+		if ( (*i) != NULL && (*i)->getFilename() == filePath )
 			return (*i);
 	}
 
@@ -28,18 +28,9 @@ Resource* ResourceManager::getElement( char* filePath ) {
 	return NULL;
 }
 
-Resource* ResourceManager::getElement( const unsigned int handle ) {
-	// if handle is valid
-	if ( handle < this->list_.size() && handle >= 0 )
-		return list_[handle];
-
-	// return null if not found
-	return NULL;
-}
-
 void ResourceManager::emptyList() {
 	for ( std::vector<Resource*>::iterator i = this->list_.begin(); i != this->list_.end(); i++ ) {
-		delete(*i);
+		delete (*i);
 		*i = NULL;
 	}
 
@@ -51,12 +42,13 @@ void ResourceManager::emptyList() {
 	//this->list_.swap(list_);
 }
 
-void ResourceManager::removeResource( const unsigned int handle ) {
+// remove a given resource
+void ResourceManager::remove( const unsigned int index ) {
 	// ensure the handle is valid
-	if ( handle < 0 || handle > this->list_.size() || list_[handle] == NULL )
+	if ( index < 0 || index > this->list_.size() || list_[index] == NULL )
 		return;
 
-	Resource* resource = list_[handle];
+	Resource* resource = list_[index];
 
 	// decrement the reference count
 	resource->decRefCount();
@@ -64,12 +56,17 @@ void ResourceManager::removeResource( const unsigned int handle ) {
 	// if reference count is 0, destroy it
 	if ( resource->getRefCount() == 0 ) {
 		// add the handle to the stack of free handles
-		this->handles_.push( handle );
+		this->handles_.push( index );
 		// delete resource
 		delete resource;
 		// mark slot as NULL
-		list_[handle] = NULL;
+		list_[index] = NULL;
 	}
+}
+
+// remove a given resource by handle
+void ResourceManager::remove( Resource *resource ) {
+	this->remove( resource->getIndex() );
 }
 
 Resource* ResourceManager::operator [](unsigned int handle) {

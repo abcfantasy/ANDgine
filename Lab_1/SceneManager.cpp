@@ -6,10 +6,8 @@
 
 #include "Model.h"
 #include "HeightMapModel.h"
-#include "TextureResource.h"
 #include "GameObject.h"
 
-#include "SceneNode.h"
 #include "GameObjectNode.h"
 #include "PlayerNode.h"
 
@@ -21,176 +19,27 @@ SceneManager* SceneManager::instance() {
 	return &sm;
 };
 
-// THESE TWO MOVED OUTSIDE FOR TESTING
-Model *pyramid = new Model();
-Model *pyramid2 = new Model();
-GameObjectNode *pyramid2Node;
-GameObjectNode *terrainNode;
+GameObjectNode *terrainNode = NULL;
 
 void SceneManager::initializeScene() {
-	pyramid->setTexture( "Textures\\stone54.jpg" );
-
-	// front face
-	pyramid->addVertex( Vertex3f(		// bottom left (green)
-		-0.5f, -0.5f, 0.5f,				// position
-		0.0f, 1.0f, 0.0f,				// color
-		0.0f, 0.0f, 1.0f,				// normal
-		0.0f, 0.0f ) );					// texture
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, 0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f ) );		// bottom right (blue)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		0.0f, 1.0f, 1.0f,
-		0.5f, 1.0f) );		// top (red)
-
-	// right face
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, 0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f ) );		// bottom left (blue)
-	pyramid->addVertex( Vertex3f(
-		0.5f, -0.5f, -0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f ) );		// bottom right (green)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		1.0f, 1.0f, 0.0f,
-		0.5f, 1.0f ) );		// top (red)
-
-	// back face
-	pyramid->addVertex( Vertex3f( 
-		0.5f, -0.5f, -0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f ) );		// bottom left (green)
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, -0.5f, 
-		0.0f, 0.0f, 1.0f, 
-		0.0f, 0.0f, -1.0f,
-		1.0f, 0.0f) );	// bottom right (blue)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		0.0f, 1.0f, -1.0f,
-		0.5f, 1.0f) );		// top (red)
-
-	// left face
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, -0.5f,
-		0.0f, 0.0f, 1.0f, 
-		-1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f ) );	// bottom left (blue)
-	pyramid->addVertex( Vertex3f( 
-		-0.5f, -0.5f, 0.5f, 
-		0.0f, 1.0f, 0.0f, 
-		-1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f) );		// bottom right (green)
-	pyramid->addVertex( Vertex3f( 
-		0.0f, 0.5f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		-1.0f, 1.0f, 0.0f,
-		0.5f, 1.0f) );		// top (red)
-
-
-	// TEST FOR COLLISION
-	// front face
-	pyramid2->addVertex( Vertex3f(		// bottom left (green)
-		5.5f, -0.5f, 0.5f,				// position
-		6.0f, 1.0f, 0.0f,				// color
-		6.0f, 0.0f, 1.0f,				// normal
-		6.0f, 0.0f ) );					// texture
-	pyramid2->addVertex( Vertex3f( 
-		5.5f, -0.5f, 0.5f, 
-		6.0f, 0.0f, 1.0f, 
-		6.0f, 0.0f, 1.0f,
-		7.0f, 0.0f ) );		// bottom right (blue)
-	pyramid2->addVertex( Vertex3f( 
-		6.0f, 0.5f, 0.0f, 
-		7.0f, 0.0f, 0.0f, 
-		6.0f, 1.0f, 1.0f,
-		6.5f, 1.0f) );		// top (red)
-
-	// right face
-	pyramid2->addVertex( Vertex3f( 
-		6.5f, -0.5f, 0.5f, 
-		6.0f, 0.0f, 1.0f, 
-		7.0f, 0.0f, 0.0f,
-		6.0f, 0.0f ) );		// bottom left (blue)
-	pyramid2->addVertex( Vertex3f(
-		6.5f, -0.5f, -0.5f, 
-		6.0f, 1.0f, 0.0f, 
-		7.0f, 0.0f, 0.0f,
-		7.0f, 0.0f ) );		// bottom right (green)
-	pyramid2->addVertex( Vertex3f( 
-		6.0f, 0.5f, 0.0f, 
-		7.0f, 0.0f, 0.0f, 
-		7.0f, 1.0f, 0.0f,
-		6.5f, 1.0f ) );		// top (red)
-
-	// back face
-	pyramid2->addVertex( Vertex3f( 
-		6.5f, -0.5f, -0.5f, 
-		6.0f, 1.0f, 0.0f, 
-		6.0f, 0.0f, -1.0f,
-		6.0f, 0.0f ) );		// bottom left (green)
-	pyramid2->addVertex( Vertex3f( 
-		5.5f, -0.5f, -0.5f, 
-		6.0f, 0.0f, 1.0f, 
-		6.0f, 0.0f, -1.0f,
-		7.0f, 0.0f) );	// bottom right (blue)
-	pyramid2->addVertex( Vertex3f( 
-		6.0f, 0.5f, 0.0f, 
-		7.0f, 0.0f, 0.0f, 
-		6.0f, 1.0f, -1.0f,
-		6.5f, 1.0f) );		// top (red)
-
-	// left face
-	pyramid2->addVertex( Vertex3f( 
-		5.5f, -0.5f, -0.5f,
-		6.0f, 0.0f, 1.0f, 
-		5.0f, 0.0f, 0.0f,
-		6.0f, 0.0f ) );	// bottom left (blue)
-	pyramid2->addVertex( Vertex3f( 
-		5.5f, -0.5f, 0.5f, 
-		6.0f, 1.0f, 0.0f, 
-		5.0f, 0.0f, 0.0f,
-		7.0f, 0.0f) );		// bottom right (green)
-	pyramid2->addVertex( Vertex3f( 
-		6.0f, 0.5f, 0.0f, 
-		7.0f, 0.0f, 0.0f, 
-		5.0f, 1.0f, 0.0f,
-		6.5f, 1.0f) );		// top (red)
-	// END TEST
-
-	playerNode_ = new PlayerNode( GameObject( pyramid ) );
-
+	Model *playerModel = ResourceManager::instance()->get<Model>( "Models\\smiley.obj" );
+	playerNode_ = new PlayerNode( new GameObject( playerModel ) );
+	playerNode_->translate( 25.0f, 0.0f, 25.0f );
 	this->sceneGraph_.addObject( playerNode_ );
-
-	// TEST
-	pyramid2Node = new GameObjectNode( GameObject( pyramid2 ) );
-	pyramid2Node->translate( 2.0f, 0.0f, 2.0f );
-	this->sceneGraph_.addObject( pyramid2Node );
-	//END TEST
-
 	
-	HeightMapModel *terrain = new HeightMapModel( "Heightmaps\\hildebrand.tga", 0.0f, 15.0f );
+	Model *planet = ResourceManager::instance()->get<Model>( "Models\\planet3f.obj" );
+	GameObjectNode *planetNode = new GameObjectNode( new GameObject( planet ) );
+	planetNode->setAngleVelocity(0.0f, 20.0f, 0.0f );
+	this->sceneGraph_.addObject( planetNode );
+	
+	HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
 	terrain->setTexture( "Textures\\dirt.tga" );
-	
-	terrainNode = new GameObjectNode( GameObject( (Model*)terrain ) );
+	terrain->rescale( 0.0f, 15.0f );
+	terrainNode = new GameObjectNode( new GameObject( terrain ) );
 	//terrainNode->translate( 25.0f, -15.0f, 25.0f );
 
 	this->sceneGraph_.addObject( terrainNode );
 	//this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
-	
-	pyramid2Node->translate( 0.0f, terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pyramid2Node->getPosition()[0] /*+ 25.0f*/, pyramid2Node->getPosition()[2] /*+ 25.0f*/)->getY() +
-	  0.55f, 0.0f  );
 
 	InputManager::instance()->addKeyDownEvent( &SceneManager::keyDown );
 	InputManager::instance()->addKeyUpEvent( &SceneManager::keyUp );
@@ -200,6 +49,8 @@ void SceneManager::renderScene() {
 	int timeThisFrame = SDL_GetTicks();
 	float deltaT = float(timeThisFrame - timeLastFrame_);
 	this->timeLastFrame_ = timeThisFrame;
+	if( deltaT > 1000.0f/30.0f )
+		deltaT = 1000.0f/30.0f;
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glLoadIdentity();
@@ -207,11 +58,16 @@ void SceneManager::renderScene() {
 	this->sceneGraph_.render( deltaT );
 
 	// check heightmap
-	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0] /*+ 25.0f*/, playerNode_->getPosition()[2] /*+ 25.0f*/)->getY() +
-	  0.55f );
-
+	float pos[4];
+	//Math::subtract( playerNode_->getPosition(), terrainNode->getPosition(), pos );
+	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pos[0], pos[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
+	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
+	if( terrainNode == NULL ) return;
+//	terrainNode->worldToModel( playerNode_->getPosition(), pos );
+//	playerNode_->setY( (*((HeightMapModel*)terrainNode->getGameObject()->getModel()))( pos[2], pos[0] )->getY() );
+	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() + 0.5f );
 	// TESTING COLLISION
-	
+	/*
 	if ( playerNode_ != NULL && pyramid2Node != NULL )
 	{
 	if ( CollisionManager::instance()->GJKCollide( playerNode_->getBoundingBox(), pyramid2Node->getBoundingBox() ) )
@@ -219,7 +75,7 @@ void SceneManager::renderScene() {
 		// do something to show that two pyramids made BOOM
 		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 1.0f, 0.0f );
 	}
-	}
+	}*/
 
 	SDL_GL_SwapBuffers();
 };
