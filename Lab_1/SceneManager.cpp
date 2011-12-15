@@ -175,7 +175,7 @@ void SceneManager::initializeScene() {
 
 	// TEST
 	pyramid2Node = new GameObjectNode( GameObject( pyramid2 ) );
-	pyramid2Node->translate( -0.5f, 0.0f, 0.0f );
+	pyramid2Node->translate( 2.0f, 0.0f, 2.0f );
 	this->sceneGraph_.addObject( pyramid2Node );
 	//END TEST
 
@@ -188,6 +188,9 @@ void SceneManager::initializeScene() {
 
 	this->sceneGraph_.addObject( terrainNode );
 	//this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
+	
+	pyramid2Node->translate( 0.0f, terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pyramid2Node->getPosition()[0] /*+ 25.0f*/, pyramid2Node->getPosition()[2] /*+ 25.0f*/)->getY() +
+	  0.55f, 0.0f  );
 
 	InputManager::instance()->addKeyDownEvent( &SceneManager::keyDown );
 	InputManager::instance()->addKeyUpEvent( &SceneManager::keyUp );
@@ -204,14 +207,11 @@ void SceneManager::renderScene() {
 	this->sceneGraph_.render( deltaT );
 
 	// check heightmap
-	float pos[3];
-	//Math::subtract( playerNode_->getPosition(), terrainNode->getPosition(), pos );
-	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pos[0], pos[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
-	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
 	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0] /*+ 25.0f*/, playerNode_->getPosition()[2] /*+ 25.0f*/)->getY() +
 	  0.55f );
+
 	// TESTING COLLISION
-	/*
+	
 	if ( playerNode_ != NULL && pyramid2Node != NULL )
 	{
 	if ( CollisionManager::instance()->GJKCollide( playerNode_->getBoundingBox(), pyramid2Node->getBoundingBox() ) )
@@ -219,7 +219,7 @@ void SceneManager::renderScene() {
 		// do something to show that two pyramids made BOOM
 		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 1.0f, 0.0f );
 	}
-	}*/
+	}
 
 	SDL_GL_SwapBuffers();
 };
