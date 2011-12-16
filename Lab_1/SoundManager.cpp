@@ -56,7 +56,7 @@ void SoundManager::ChangeAmbientEffect( float* earPosition, float earRotation ) 
 	// get distance from player to sound source
 	float distance = sqrt( pow( this->soundPosition[0] - earPosition[0], 2 ) + pow( this->soundPosition[2] - earPosition[2], 2 ) ) * 5;
 	if ( distance <= 255 )
-		Mix_SetDistance( 3, distance );
+		Mix_SetDistance( 3, (Uint8)distance );
 
 	float rotation;
 	// make sure rotation is between 0 to 360
@@ -69,7 +69,7 @@ void SoundManager::ChangeAmbientEffect( float* earPosition, float earRotation ) 
 	// map the value between 0 to 254 (currently from -1 to 1)
 	v = (v * 127) + 127;
 	// set the sound panning left and right
-	Mix_SetPanning( 3, 254 - v, v );
+	Mix_SetPanning( 3, 254 - (Uint8)v, (Uint8)v );
 }
 
 void SoundManager::FreeResources() {

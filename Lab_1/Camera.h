@@ -23,8 +23,6 @@ public:
 	void translate( float x, float y, float z, float deltaT = 1000.0f );
 	void translate( float position[3], float deltaT = 1000.0f );
 
-	void Camera::changeY( float deltaY );
-
 	// Calls gluLookAt with the proper parameters
 	void render();
 };

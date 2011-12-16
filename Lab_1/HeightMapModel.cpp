@@ -12,10 +12,6 @@ Vertex3f* HeightMapModel::operator()( int i, int j ) {
 	return &this->vertices_[ j * this->width_ + i ];
 };
 
-/*Vertex3f* HeightMapModel::operator()( float x, float y ) {
-	
-};*/
-
 // Overrides the method from Model, because we're rendering with a triangle strip and in a different order
 void HeightMapModel::compile(){
 	// We need to free up the old display list if we were using one
@@ -206,7 +202,7 @@ bool HeightMapModel::load() {
 	float textureIncrementZ = 1.0f / this->length_;
 	// The model will be centered around the origin
 	float xOffset = 0.0f;//-(this->width_ / 2.0f);
-	float yOffset = 0.0f;//-(this->length_ / 2.0f);
+	float zOffset = 0.0f;//-(this->length_ / 2.0f);
 
 	// This calculates the amplitude of the scaling
 	float amp = this->maxScale_ - this->minScale_;
@@ -221,7 +217,7 @@ bool HeightMapModel::load() {
 		for (int j = 0;j < this->width_; ++j, pixel += tgaImage->bytesPerPx_ ) {
 			// The X and Z positions depend on the pixel we're at
 			point.setX( float(j) + xOffset );
-			point.setZ( float(i) + xOffset );
+			point.setZ( float(i) + zOffset );
 			// The Y position scales with the last component of the pixel
 			// And is interpolated using the amplitude
 			point.setY( amp * ( tgaImage->image_[pixel + ( tgaImage->bytesPerPx_ - 1 ) ] / 256.0f ) );
@@ -248,6 +244,28 @@ bool HeightMapModel::load() {
 
 	return true;
 	*/
+};
+
+float HeightMapModel::getHeight( float x, float z ) {
+	int coordX, coordZ;
+	float scaleX, scaleZ;
+	float a, b, c, d;
+	
+	if( x < 0 || z < 0 || x >= width_ || z >= width_ )
+		return 0;
+
+	coordX = (int)x;
+	coordZ = (int)z;
+
+	scaleX = (float)x - coordX;
+	scaleZ = (float)z - coordZ;
+
+	a = (*this)( coordX, coordZ )->getY();
+	b = (*this)( coordX + 1, coordZ )->getY();
+	c = (*this)( coordX, coordZ + 1 )->getY();
+	d = (*this)( coordX + 1, coordZ + 1 )->getY();
+
+	return a * ( 1 - scaleX ) * ( 1 - scaleZ ) + b * scaleX * ( 1 - scaleZ ) + c * ( 1 - scaleX ) * scaleZ + d * scaleX * scaleZ;
 };
 
 // Rescales the model between min and max

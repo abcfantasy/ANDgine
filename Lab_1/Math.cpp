@@ -208,7 +208,7 @@ void Math::multiplyVector( float v[4], const float m[16] ) {
 	for( i = 0; i < 4; i++ ) {
 		v[i] = 0.0f;
 		for( j = 0; j < 4; j++ ) {
-			v[i] += m[i * 4 + j] * v_aux[j];
+			v[i] += m[j * 4 + i] * v_aux[j];
 		}
 	}
 };

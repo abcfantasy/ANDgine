@@ -10,8 +10,8 @@ protected:
 
 public:
 	// constructor and destructor
-	Resource( const unsigned int index, char *szFullPath ) : filename_( szFullPath ), index_( index ), refCount_( 1 ) {};
-	~Resource() {};
+	Resource( const unsigned int index, const char *szFullPath );
+	~Resource();
 	
 	inline char* getFilename() { return this->filename_; }
 	inline unsigned int getIndex() { return this->index_; }

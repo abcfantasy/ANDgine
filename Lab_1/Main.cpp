@@ -10,7 +10,6 @@
 #include "SceneManager.h"
 #include "InputManager.h"
 #include "LightingManager.h"
-
 #include "SoundManager.h"
 
 /* screen width, height, and bit depth */
@@ -93,16 +92,16 @@ void initializeManagers() {
 	LightingManager::instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
 	LightingManager::instance()->setGlobalAmbient( ambientLight );
 
-	SceneManager::instance()->initializeScene();
+	SceneManager::instance()->initializeScene( "XML\\loading.xml", "cell1x1" );
 
 	SoundManager::instance()->InitializeSound();
-	SoundManager::instance()->LoadMusic( "Title.mp3" );
-	SoundManager::instance()->LoadSound( "explode7.wav", "explosion" );
+	SoundManager::instance()->LoadMusic( "Sounds\\Title.mp3" );
+	SoundManager::instance()->LoadSound( "Sounds\\explode7.wav", "explosion" );
 	float* soundPos = new float[3];
 	soundPos[0] = 50.0f;
 	soundPos[1] = 0.0f;
 	soundPos[2] = 50.0f;
-	SoundManager::instance()->LoadAmbientSound( "sea.wav", soundPos );
+	SoundManager::instance()->LoadAmbientSound( "Sounds\\Cuckoo2.wav", soundPos );
 };
 
 int main( int argc, char **argv )

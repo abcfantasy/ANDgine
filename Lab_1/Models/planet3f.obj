@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-t Textures\world.jpg
+t Textures/world.jpg
 v -0.001675 1.925379 -4.342887
 v -0.033103 1.925379 -4.338420
 v -0.061613 1.925379 -4.324459

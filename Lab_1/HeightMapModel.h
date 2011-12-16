@@ -32,6 +32,9 @@ public:
 	// heightmap( i, j ) = the vertex at position i,j
 	Vertex3f* operator()( int i, int j );
 
+	// Gets the interpolated height at the x, z coordinates
+	float getHeight( float x, float z );
+
 	// Loads the model from the image file
 	bool load();
 

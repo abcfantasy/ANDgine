@@ -64,10 +64,10 @@ public:
 		Resource *resource = (Resource*)( new T( index, filePath ) );
 		// call its initialization method
 		resource->load();
-		/*if( resource->load() == false ) {
+		if( resource->load() == false ) {
 			this->handles_.push( index );
 			return NULL;
-		}*/
+		}
 
 		this->list_[index] = resource;
 		

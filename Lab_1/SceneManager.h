@@ -30,7 +30,7 @@ public:
 	inline PlayerNode* getPlayerNode() { return this->playerNode_; };
 
 	// This method is temporarily here; it has all the test code that we wrote to render a basic scene
-	void initializeScene();
+	void initializeScene( char *input_xml, char *cell );
 	// Renders a frame (it tracks deltaT by itself)
 	void renderScene();
 

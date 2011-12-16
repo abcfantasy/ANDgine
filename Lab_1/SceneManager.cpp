@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "SDL.h"
 
+#include "SoundManager.h"
+#include "CollisionManager.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
 
@@ -11,10 +13,9 @@
 #include "GameObjectNode.h"
 #include "PlayerNode.h"
 
-#include "CollisionManager.h"
-#include "Math.h"
-
-#include "SoundManager.h"
+#include "rapidxml.hpp"
+#include "rapidxml_utils.hpp"
+using namespace rapidxml;
 
 SceneManager* SceneManager::instance() {
 	static SceneManager sm;
@@ -23,25 +24,72 @@ SceneManager* SceneManager::instance() {
 
 GameObjectNode *terrainNode = NULL;
 
-void SceneManager::initializeScene() {
-	Model *playerModel = ResourceManager::instance()->get<Model>( "Models\\smiley.obj" );
-	playerNode_ = new PlayerNode( new GameObject( playerModel ) );
-	//playerNode_->translate( 25.0f, 0.0f, 25.0f );
-	this->sceneGraph_.addObject( playerNode_ );
+void SceneManager::initializeScene(char *input_xml, char *cell) {
+	xml_document<> xmlDoc;
+	float x, y, z;
 	
-	Model *planet = ResourceManager::instance()->get<Model>( "Models\\planet3f.obj" );
-	GameObjectNode *planetNode = new GameObjectNode( new GameObject( planet ) );
-	planetNode->setAngleVelocity(0.0f, 20.0f, 0.0f );
-	this->sceneGraph_.addObject( planetNode );
-	
-	HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
-	//terrain->setTexture( "Textures\\dirt.tga" );
-	terrain->rescale( 0.0f, 15.0f );
-	terrainNode = new GameObjectNode( new GameObject( terrain ) );
-	terrainNode->translate( -8.0f, 0.0f, -8.0f );
+	file<> file(input_xml);
+	xmlDoc.parse<0>(file.data());
+	xml_node<>* cur_node = xmlDoc.first_node()->first_node(cell)->first_node();
+	xml_node<>* subNode;
+	GameObjectNode *newNode;
 
-	this->sceneGraph_.addObject( terrainNode );
-	//this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
+	while( cur_node ) {
+		if( cur_node && strcmp( cur_node->name(), "player") == 0) {
+			Model *playerModel = ResourceManager::instance()->get<Model>( cur_node->first_node("location")->value() );
+			newNode = playerNode_ = new PlayerNode( new GameObject( playerModel ) );
+		} else if( cur_node && strcmp( cur_node->name(), "heightmap") == 0 ) {
+			HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( cur_node->first_node("location")->value() );
+			newNode = terrainNode = new GameObjectNode( new GameObject( terrain ) );
+			
+			subNode = cur_node->first_node("scale");
+			if( cur_node->first_node("scale") ) {
+				float min = (float)atof( subNode->first_attribute("min")->value() );
+				float max = (float)atof( subNode->first_attribute("max")->value() );
+				terrain->rescale( min, max );
+			}
+
+			this->sceneGraph_.addObject( terrainNode );
+		} else if( cur_node && strcmp( cur_node->name(), "model") == 0 ) {
+			Model *newModel = ResourceManager::instance()->get<Model>( cur_node->first_node("location")->value() );
+			newNode = new GameObjectNode( new GameObject( newModel ) );			
+		}
+		
+		subNode = cur_node->first_node("texture");
+		if( subNode ) newNode->getGameObject()->getModel()->setTexture( subNode->value() );
+
+		subNode = cur_node->first_node( "velocity" );
+		if( subNode ) {
+			x = (float)atof( subNode->first_node("x")->value() );
+			y = (float)atof( subNode->first_node("y")->value() );
+			z = (float)atof( subNode->first_node("z")->value() );
+			newNode->setVelocity(x,y,z);
+		}
+		subNode = cur_node->first_node( "angleVelocity" );
+		if( subNode ) {
+			x = (float)atof( subNode->first_node("x")->value() );
+			y = (float)atof( subNode->first_node("y")->value() );
+			z = (float)atof( subNode->first_node("z")->value() );
+			newNode->setAngleVelocity(x,y,z);
+		}
+		subNode = cur_node->first_node("translation");
+		if( subNode ) {
+			x = (float)atof( subNode->first_node("x")->value() );
+			y = (float)atof( subNode->first_node("y")->value() );
+			z = (float)atof( subNode->first_node("z")->value() );
+			newNode->translate(x,y,z);
+		}
+		subNode = cur_node->first_node("rotation");
+		if( subNode ) {
+			x = (float)atof( subNode->first_node("x")->value() );
+			y = (float)atof( subNode->first_node("y")->value() );
+			z = (float)atof( subNode->first_node("z")->value() );
+			newNode->rotate(x,y,z);
+		}
+		this->sceneGraph_.addObject( newNode );
+
+		cur_node = cur_node->next_sibling();
+	}
 
 	InputManager::instance()->addKeyDownEvent( &SceneManager::keyDown );
 	InputManager::instance()->addKeyUpEvent( &SceneManager::keyUp );
@@ -61,13 +109,12 @@ void SceneManager::renderScene() {
 
 	// check heightmap
 	float pos[4];
-	//Math::subtract( playerNode_->getPosition(), terrainNode->getPosition(), pos );
-	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(pos[0], pos[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
-	//playerNode_->translate( playerNode_->getPosition()[0], (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() - playerNode_->getPosition()[1], playerNode_->getPosition()[2], deltaT );
-	if( terrainNode == NULL ) return;
-//	terrainNode->worldToModel( playerNode_->getPosition(), pos );
-//	playerNode_->setY( (*((HeightMapModel*)terrainNode->getGameObject()->getModel()))( pos[2], pos[0] )->getY() );
-	playerNode_->setY( terrainNode->getPosition()[1] + (*(HeightMapModel*)terrainNode->getGameObject()->getModel())(playerNode_->getPosition()[0], playerNode_->getPosition()[2])->getY() + 0.5f );
+	if( terrainNode != NULL ) {
+		terrainNode->worldToModel( playerNode_->getPosition(), pos );
+		float playerY = playerNode_->getPosition()[1];
+		float deltaY = ( terrainNode->getPosition()[1] + ((HeightMapModel*)terrainNode->getGameObject()->getModel())->getHeight( pos[0], pos[2] ) ) - playerY;
+		if( deltaY != 0 ) playerNode_->translate( 0.0f, deltaY, 0.0f );
+	}
 
 	// change ambient sound
 	SoundManager::instance()->ChangeAmbientEffect( playerNode_->getPosition(), playerNode_->getRotation()[1] );
@@ -90,18 +137,20 @@ void SceneManager::keyDown( SDLKey key, SDLMod mod )
 {
 	// one option is to check the key here and handle result
 	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
-	if ( key == SDLK_UP )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f ); }
-	if ( key == SDLK_DOWN )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f ); }
-	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
-	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
-	if ( key == SDLK_SPACE ) { SoundManager::instance()->PlaySound( "explosion" ); }
-	if ( key == SDLK_ESCAPE ) { SDL_Quit(); exit( 1 ); }
+	switch( key ) {
+	case SDLK_UP:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f );	break;
+	case SDLK_DOWN:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f );		break;
+	case SDLK_RIGHT:SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f );		break;
+	case SDLK_LEFT:	SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f );	break;
+	}
 }
 
 void SceneManager::keyUp( SDLKey key, SDLMod mod )
 {
-	if ( key == SDLK_UP )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f ); }
-	if ( key == SDLK_DOWN )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f ); }
-	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
-	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
+	switch( key ) {
+	case SDLK_UP:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f );		break;
+	case SDLK_DOWN:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f );	break;
+	case SDLK_RIGHT:SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f );	break;
+	case SDLK_LEFT:	SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f );		break;
+	}
 }
