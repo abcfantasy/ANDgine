@@ -3,16 +3,6 @@
 #include <math.h>
 
 /*
- * <summary>Gets the singleton instane</summary>
- * <returns>The instance of HeightMapGen</returns>
- */
-HeightMapGen* HeightMapGen::instance()
-{
-	static HeightMapGen hmg;
-	return &hmg;
-}
-
-/*
  * randNum - Return a random floating point number such that
  *      (min <= return-value <= max)
  * 32,767 values are possible for any given range.
@@ -110,6 +100,8 @@ float HeightMapGen::avgSquareVals (int i, int j, int stride, int size, float *ma
 
 // generate a 2d array for heightmap
 // WARNING: size of map must be power of 2
+// High h => smooth map
+// Low h => rough map
 void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float heightScale, float h)
 {
 	int stride;
@@ -185,8 +177,8 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
 		for (int i = stride; i < subSize; i += stride) {
 			for (int j = stride; j < subSize; j += stride) {
 				map[(i * size) + j] =
-					scale * randnum(-0.5f, 0.5f) +
-					avgSquareVals(i, j, stride, size, map);
+					scale * HeightMapGen::randnum(-0.5f, 0.5f) +
+					HeightMapGen::avgSquareVals(i, j, stride, size, map);
 				j += stride;
 			}
 			i += stride;
@@ -221,8 +213,8 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
 				   current position. It will return the average of the
 				   surrounding diamond data points. */
 				map[(i * size) + j] =
-					scale * randnum(-0.5f, 0.5f) +
-					avgDiamondVals(i, j, stride, size, subSize, map);
+					scale * HeightMapGen::randnum(-0.5f, 0.5f) +
+					HeightMapGen::avgDiamondVals(i, j, stride, size, subSize, map);
 
 				/* To wrap edges seamlessly, copy edge values around
 				   to other side of array */

@@ -3,6 +3,7 @@
 #include "TextureResource.h"
 #include "TGAImage.h"
 #include "Math.h"
+#include "SDL.h"
 
 #include "HeightMapGen.h"
 
@@ -136,46 +137,49 @@ void HeightMapModel::computeNormals() {
 };
 
 bool HeightMapModel::load() {
+	if( this->filename_[0] ) return loadFromImage();
+	else return loadFromSeed();
+};
 
-	// TEST WITH RANDOM GENERATION
-	float map[289];
-	HeightMapGen::instance()->fill2DFractArray( map, 16, 1685, 1, 0.5f );
+bool HeightMapModel::loadFromSeed() {
+	float map[257 * 257];
+	// If you pass "size" to the function, the size of the map should be ( size + 1 )^2
+	// SDL_GetTicks() is a pretty random seed
+	// High h => smooth map
+	// Low h => rough map
+	HeightMapGen::fill2DFractArray( map, 256, SDL_GetTicks(), 1, 0.5f );
 
-	this->width_ = this->length_ = 17;
+	this->width_ = this->length_ = 257;
+	float textureIncrementX = 1.0f / this->width_;
+	float textureIncrementZ = 1.0f / this->length_;
+	
 	float xOffset = 0.0f;
 	float yOffset = 0.0f;
 
 	// This calculates the amplitude of the scaling
 	float amp = this->maxScale_ - this->minScale_;
-	// This keeps track of the byte we're at in the image
-	int pixel = 0;
+
 	// We're applying all the modifications to a single vertex
 	// The vertices in the array are copies anyway
 	Vertex3f point;
 
 	// We start calculating the vertices
 	for (int i = 0 ; i < this->length_; ++i)
-		for (int j = 0;j < this->width_; ++j, pixel ++ ) {
-			// The X and Z positions depend on the pixel we're at
+		for (int j = 0;j < this->width_; ++j ) {
+			// The X and Z positions depend on the point we're at
 			point.setX( float(j) + xOffset );
 			point.setZ( float(i) + xOffset );
-			// The Y position scales with the last component of the pixel
-			// And is interpolated using the amplitude
+			// The Y position is interpolated using the amplitude
 			point.setY( amp * (map[(this->width_ * j) + i]) + minScale_ );
 
 			// The texture coordinates are also easy
-			//point.setU( j * textureIncrementX );
-			//point.setV( i * textureIncrementZ );
+			point.setU( j * textureIncrementX );
+			point.setV( i * textureIncrementZ );
 
-			point.setR( 1.0f );
-			point.setG( 0.5f );
-			point.setB( 0.5f );
-			// If mode = RGBA then we fill in the colors as well
-			//if ( tgaImage->bytesPerPx_ == 4 ) {
-			//	point.setR( tgaImage->image_[pixel] / 256.0f );
-			//	point.setG( tgaImage->image_[pixel + 1] / 256.0f );
-			//	point.setB( tgaImage->image_[pixel + 2] / 256.0f );
-			//}
+			//point.setR( 1.0f );
+			//point.setG( 0.5f );
+			//point.setB( 0.5f );
+
 			this->addVertex( point );
 		}
 	
@@ -185,10 +189,9 @@ bool HeightMapModel::load() {
 	this->renderMethod_ = GL_TRIANGLE_STRIP;
 
 	return true;
-	
-	// END TEST ##########################3
-	/*
-	// Loading the image from the Resource Manager
+};
+
+bool HeightMapModel::loadFromImage() {
 	TGAImage *tgaImage = ResourceManager::instance()->get<TGAImage>( this->filename_ );
 	if( tgaImage == NULL )
 		return false;
@@ -243,7 +246,6 @@ bool HeightMapModel::load() {
 	this->renderMethod_ = GL_TRIANGLE_STRIP;
 
 	return true;
-	*/
 };
 
 float HeightMapModel::getHeight( float x, float z ) {

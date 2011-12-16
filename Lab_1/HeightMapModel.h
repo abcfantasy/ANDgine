@@ -37,6 +37,8 @@ public:
 
 	// Loads the model from the image file
 	bool load();
+	bool loadFromSeed();
+	bool loadFromImage();
 
 	// Rescales the model between min and max
 	void rescale( float minScale = 0.0f, float maxScale = 1.0f );

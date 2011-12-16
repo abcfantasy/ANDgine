@@ -39,7 +39,13 @@ void SceneManager::initializeScene(char *input_xml, char *cell) {
 			Model *playerModel = ResourceManager::instance()->get<Model>( cur_node->first_node("location")->value() );
 			newNode = playerNode_ = new PlayerNode( new GameObject( playerModel ) );
 		} else if( cur_node && strcmp( cur_node->name(), "heightmap") == 0 ) {
-			HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( cur_node->first_node("location")->value() );
+			char *modelPath;
+
+			subNode = cur_node->first_node( "location" );
+			if( subNode ) modelPath = subNode->value();
+			else modelPath = "";
+				
+			HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( modelPath );
 			newNode = terrainNode = new GameObjectNode( new GameObject( terrain ) );
 			
 			subNode = cur_node->first_node("scale");
@@ -138,10 +144,11 @@ void SceneManager::keyDown( SDLKey key, SDLMod mod )
 	// one option is to check the key here and handle result
 	// another option is to poll the getKeys of InputManager in the game loop and handle accordingly
 	switch( key ) {
-	case SDLK_UP:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f );	break;
-	case SDLK_DOWN:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f );		break;
-	case SDLK_RIGHT:SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f );		break;
-	case SDLK_LEFT:	SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f );	break;
+	case SDLK_UP:		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, -3.0f );	break;
+	case SDLK_DOWN:		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f );		break;
+	case SDLK_RIGHT:	SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f );		break;
+	case SDLK_LEFT:		SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f );	break;
+	case SDLK_ESCAPE:	SDL_Quit(); break;
 	}
 }
 

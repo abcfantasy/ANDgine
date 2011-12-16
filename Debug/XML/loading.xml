@@ -6,17 +6,13 @@
 			<texture>Textures\player.jpg</texture>
 		</player>
 		<heightmap>
-			<location>Heightmaps\heightmap.tga</location>
-			<texture>Textures\dirt.tga</texture>
-			<scale>
-				<x>0.0f</x>
-				<y>15.0f</y>
-			</scale>
-			<translate>
-				<x>25.0f</x>
-				<y>-15.0f</y>
-				<z>25.0f</z>
-			</translate>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="50.0f" />
+			<translation>
+				<x>-128.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
 		</heightmap>
 		<model>
 			<location>Models\planet3f.obj</location>
@@ -31,11 +27,11 @@
 				<y>00.0f</y>
 				<z>0.0f</z>
 			</angleVelocity>
-			<translate>
+			<translation>
 				<x>0.0f</x>
 				<y>0.0f</y>
 				<z>0.0f</z>
-			</translate>
+			</translation>
 			<texture>Textures\world2.jpg</texture>
 		</model>
 		<model>
@@ -51,11 +47,11 @@
 				<y>20.0f</y>
 				<z>0.0f</z>
 			</angleVelocity>
-			<translate>
+			<translation>
 				<x>0.0f</x>
 				<y>0.0f</y>
 				<z>0.0f</z>
-			</translate>
+			</translation>
 			<texture>Textures\world.jpg</texture>
 		</model>
 	</cell1x1>
