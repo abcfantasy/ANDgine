@@ -1,6 +1,5 @@
 #include "GameObjectNode.h"
 #include "GameObject.h"
-#include "Math.h"
 
 GameObjectNode::GameObjectNode( GameObject *gameObject ) {
 	this->gameObject_ = gameObject;

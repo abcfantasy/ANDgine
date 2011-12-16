@@ -10,6 +10,7 @@
 #include "SceneManager.h"
 #include "InputManager.h"
 #include "LightingManager.h"
+#include "SoundManager.h"
 
 /* screen width, height, and bit depth */
 #define SCREEN_WIDTH  640
@@ -48,7 +49,6 @@ void handleKeyPress( SDL_keysym *keysym )
 /* general OpenGL initialization function */
 int initGL( GLvoid )
 {
-
 	/* Enable smooth shading */
 	glShadeModel( GL_SMOOTH );
 	
@@ -92,7 +92,16 @@ void initializeManagers() {
 	LightingManager::instance()->setPhongLight( GL_LIGHT0, ambientLight, diffuseLight, specularLight, position );
 	LightingManager::instance()->setGlobalAmbient( ambientLight );
 
-	SceneManager::instance()->initializeScene();
+	SceneManager::instance()->initializeScene( "XML\\loading.xml", "cell1x1" );
+
+	SoundManager::instance()->InitializeSound();
+	SoundManager::instance()->LoadMusic( "Sounds\\Title.mp3" );
+	SoundManager::instance()->LoadSound( "Sounds\\explode7.wav", "explosion" );
+	float* soundPos = new float[3];
+	soundPos[0] = 50.0f;
+	soundPos[1] = 0.0f;
+	soundPos[2] = 50.0f;
+	SoundManager::instance()->LoadAmbientSound( "Sounds\\Cuckoo2.wav", soundPos );
 };
 
 int main( int argc, char **argv )
@@ -107,7 +116,7 @@ int main( int argc, char **argv )
 	const SDL_VideoInfo *videoInfo;
 
 	/* initialize SDL */
-	if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if ( SDL_Init( SDL_INIT_AUDIO | SDL_INIT_VIDEO ) < 0 )
 	{
 		fprintf( stderr, "Video initialization failed: %s\n",
 			 SDL_GetError( ) );
@@ -167,10 +176,18 @@ int main( int argc, char **argv )
 	SDL_ShowCursor( FALSE );
 	SDL_WarpMouse( 320, 240 );
 
+	// start music
+	SoundManager::instance()->PlayMusic();
+	SoundManager::instance()->PlayAmbientSound();
 	/* wait for events */ 
 	while ( !done )
 	{
+		// handle mouse input
 		InputManager::instance()->handleMouse();
+
+		// handle background music
+		//if ( !SoundManager::instance()->IsMusicPlaying() )
+		//	SoundManager::instance()->PlayMusic();
 		
 		/* handle the events in the queue */
 		while ( SDL_PollEvent( &event ) )
@@ -204,6 +221,9 @@ int main( int argc, char **argv )
 		/* draw the scene */
 		SceneManager::instance()->renderScene();
 	}
+
+	// free music
+	SoundManager::instance()->FreeResources();
 
 	/* clean ourselves up and exit */
 	Quit( 0 );

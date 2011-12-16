@@ -17,7 +17,7 @@ float* CollisionManager::GetFarthestPointInDirection( std::vector<float*> shape,
 	float highest = Math::dotProduct( shape[0], direction );
 	float current = 0;
 
-	for (int i = 1; i < shape.size(); i++) {
+	for ( unsigned int i = 1; i < shape.size(); i++) {
 		current = Math::dotProduct( shape[i], direction );
 		if ( current >= highest ) {
 			highest = current;

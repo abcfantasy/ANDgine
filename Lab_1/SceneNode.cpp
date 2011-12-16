@@ -107,12 +107,12 @@ void SceneNode::worldToModel( float coordinates[3], float result[4], float type 
 	result[3] = type;
 
 	Math::identityMatrix( rotation );
-	Math::rotationMatrix( this->rotation_[0], this->rotation_[1], this->rotation_[2], rotation );
+	Math::rotationMatrix( -this->rotation_[0], -this->rotation_[1], -this->rotation_[2], rotation );
 	Math::multiplyVector( result, rotation );
 
-	//Math::identityMatrix( translation );
-	//Math::translationMatrix( this->position_[0], this->position_[1], this->position_[2], translation );
-	//Math::multiplyVector( result, translation );
+	Math::identityMatrix( translation );
+	Math::translationMatrix( -this->position_[0], -this->position_[1], -this->position_[2], translation );
+	Math::multiplyVector( result, translation );
 };
 
 void SceneNode::applyVelocity( float deltaT ) {

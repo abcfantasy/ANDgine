@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _COLLISIONMANAGER_H_
+#define _COLLISIONMANAGER_H_
 
 #include "Vertex3f.h"
 #include <vector>
@@ -18,3 +19,4 @@ public:
 	bool CollisionManager::GJKCollide( std::vector<Vertex3f>* shape1, std::vector<Vertex3f>* shape2 );
 };
 
+#endif
