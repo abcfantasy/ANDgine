@@ -26,7 +26,7 @@ GameObjectNode *terrainNode = NULL;
 void SceneManager::initializeScene() {
 	Model *playerModel = ResourceManager::instance()->get<Model>( "Models\\smiley.obj" );
 	playerNode_ = new PlayerNode( new GameObject( playerModel ) );
-	playerNode_->translate( 25.0f, 0.0f, 25.0f );
+	//playerNode_->translate( 25.0f, 0.0f, 25.0f );
 	this->sceneGraph_.addObject( playerNode_ );
 	
 	Model *planet = ResourceManager::instance()->get<Model>( "Models\\planet3f.obj" );
@@ -35,10 +35,10 @@ void SceneManager::initializeScene() {
 	this->sceneGraph_.addObject( planetNode );
 	
 	HeightMapModel *terrain = ResourceManager::instance()->get<HeightMapModel>( "Heightmaps\\hildebrand.tga" );
-	terrain->setTexture( "Textures\\dirt.tga" );
+	//terrain->setTexture( "Textures\\dirt.tga" );
 	terrain->rescale( 0.0f, 15.0f );
 	terrainNode = new GameObjectNode( new GameObject( terrain ) );
-	//terrainNode->translate( 25.0f, -15.0f, 25.0f );
+	terrainNode->translate( -8.0f, 0.0f, -8.0f );
 
 	this->sceneGraph_.addObject( terrainNode );
 	//this->sceneGraph_.translate( 0.0f, 0.0f, -3.0f );
@@ -95,6 +95,7 @@ void SceneManager::keyDown( SDLKey key, SDLMod mod )
 	if ( key == SDLK_RIGHT ){ SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f ); }
 	if ( key == SDLK_LEFT )	{ SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f ); }
 	if ( key == SDLK_SPACE ) { SoundManager::instance()->PlaySound( "explosion" ); }
+	if ( key == SDLK_ESCAPE ) { SDL_Quit(); exit( 1 ); }
 }
 
 void SceneManager::keyUp( SDLKey key, SDLMod mod )

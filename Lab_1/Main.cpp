@@ -50,7 +50,6 @@ void handleKeyPress( SDL_keysym *keysym )
 /* general OpenGL initialization function */
 int initGL( GLvoid )
 {
-
 	/* Enable smooth shading */
 	glShadeModel( GL_SMOOTH );
 	
@@ -103,7 +102,7 @@ void initializeManagers() {
 	soundPos[0] = 50.0f;
 	soundPos[1] = 0.0f;
 	soundPos[2] = 50.0f;
-	SoundManager::instance()->LoadAmbientSound( "Cuckoo2.wav", soundPos );
+	SoundManager::instance()->LoadAmbientSound( "sea.wav", soundPos );
 };
 
 int main( int argc, char **argv )

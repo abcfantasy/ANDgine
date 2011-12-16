@@ -102,6 +102,9 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\Game Entities</Filter>
     </ClCompile>
+    <ClCompile Include="HeightMapGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputManager.h">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="HeightMapModel.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapGen.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
