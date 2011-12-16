@@ -8,6 +8,7 @@ const float MATH_POINT	= 1.0f;
 class Math {
 public:
 	static void crossProduct( float *a, float *b, float *c, float *result );
+
 	static void crossProduct( float *a, float *b, float *result );
 	static float dotProduct( float *a, float *b );
 	static void negate( float *a, float *result );
