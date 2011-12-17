@@ -142,6 +142,8 @@ void SceneManager::keyDown( SDLKey key, SDLMod mod )
 	case SDLK_DOWN:	SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 0.0f, 3.0f );		break;
 	case SDLK_RIGHT:SceneManager::instance()->getPlayerNode()->addVelocity( 3.0f, 0.0f, 0.0f );		break;
 	case SDLK_LEFT:	SceneManager::instance()->getPlayerNode()->addVelocity( -3.0f, 0.0f, 0.0f );	break;
+	case SDLK_SPACE: SoundManager::instance()->PlaySound( "explosion" ); break;
+	case SDLK_ESCAPE: SDL_Quit(); exit( 1 ); break;
 	}
 }
 
