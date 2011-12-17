@@ -6,9 +6,9 @@
 			<texture>Textures\player.jpg</texture>
 		</player>
 		<heightmap>
-			<location>Heightmaps\gradient.tga</location>
+			<!--<location>Heightmaps\gradient.tga</location>-->
 			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="50.0f" />
+			<scale min="0.0f" max ="5.0f" />
 			<translation>
 				<x>-128.0f</x>
 				<y>0.0f</y>

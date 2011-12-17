@@ -7,6 +7,7 @@ Resource::Resource( const unsigned int index, const char *szFullPath ) : index_(
 	filename_ = new char[ filename_length ];
 	strcpy_s( filename_, filename_length, szFullPath );
 };
+
 Resource::~Resource() {
 	delete[] filename_;
 };
