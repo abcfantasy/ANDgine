@@ -32,6 +32,7 @@ public:
 	void remove( Resource *resource );
 
 	// get a resource by filename
+	// being a templated method, it has to be implemented in the header
 	template <class T>
 	T* get( char *filePath ) {
 		// check that filename and list are valid

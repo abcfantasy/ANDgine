@@ -1,4 +1,7 @@
 #include "SceneNode.h"
+#include "ContainerNode.h"
+#include "SceneManager.h"
+#include "Collision.h"
 
 void SceneNode::setRotation( float x, float y, float z ) {
 	this->rotation_[0] = x;
@@ -34,6 +37,16 @@ void SceneNode::setVelocity( float velocity[3] ) {
 	this->setVelocity( velocity[0], velocity[1], velocity[2] );
 };
 
+void SceneNode::setAcceleration( float x, float y, float z ) {
+	this->acceleration_[0] = x;
+	this->acceleration_[1] = y;
+	this->acceleration_[2] = z;
+};
+
+void SceneNode::setAcceleration( float acceleration[3] ) {
+	this->setAcceleration( acceleration[0], acceleration[1], acceleration[2] );
+};
+
 void SceneNode::addVelocity( float x, float y, float z ) {
 	this->velocity_[0] += x;
 	this->velocity_[1] += y;
@@ -65,9 +78,9 @@ void SceneNode::addAngleVelocity( float angle_velocity[3] ) {
 };
 
 void SceneNode::rotate( float x, float y, float z, float deltaT ) {
-	this->rotation_[0] += x * deltaT / 1000.0f;
-	this->rotation_[1] += y * deltaT / 1000.0f;
-	this->rotation_[2] += z * deltaT / 1000.0f;
+	this->rotation_[0] += x * deltaT;
+	this->rotation_[1] += y * deltaT;
+	this->rotation_[2] += z * deltaT;
 
 	this->compile();
 };
@@ -77,9 +90,16 @@ void SceneNode::rotate( float rotation[3], float deltaT ) {
 };
 
 void SceneNode::translate( float x, float y, float z, float deltaT ) {
-	this->position_[0] += x * deltaT / 1000.0f;
-	this->position_[1] += y * deltaT / 1000.0f;
-	this->position_[2] += z * deltaT / 1000.0f;
+	this->position_[0] += x * deltaT;
+	this->position_[1] += y * deltaT;
+	this->position_[2] += z * deltaT;
+
+	// update bounding box
+	for( std::vector<Vertex3f>::iterator i = boundingBox_.begin(); i != boundingBox_.end(); ++i ) {
+		i->setX( i->getX() + ( x * deltaT ) );
+		i->setY( i->getY() + ( y * deltaT ) );
+		i->setZ( i->getZ() + ( z * deltaT ) );
+	}
 
 	this->compile();
 };
@@ -116,11 +136,45 @@ void SceneNode::worldToModel( float coordinates[3], float result[4], float type 
 };
 
 void SceneNode::applyVelocity( float deltaT ) {
-	if( !Math::isNullVector( this->getVelocity() ) ) {
+	std::vector<SceneNode*> nearbyNodes;
+	bool checked = false;
+	bool collision = false;
+
+	if( !Math::isNullVector( this->velocity_ ) ) {
 		float modelSpaceVelocity[4];
-		this->worldToModel( this->getVelocity(), modelSpaceVelocity, MATH_VECTOR );
+		this->worldToModel( this->velocity_, modelSpaceVelocity, MATH_VECTOR );
+		
+		SceneManager::instance()->getSceneGraph()->getNearbyNodes( this, &nearbyNodes );
+		checked = true;
+
 		this->translate( modelSpaceVelocity, deltaT );
+
+		for( std::vector<SceneNode*>::iterator i = nearbyNodes.begin(); i != nearbyNodes.end() && !collision; ++i ) {
+			if( (*i)->checkCollision( this ) )
+				collision = true;
+		}
+
+		if( collision ) {
+			Math::negate( modelSpaceVelocity, modelSpaceVelocity );
+			this->translate( modelSpaceVelocity, deltaT );
+		}
 	}
-	if( !Math::isNullVector( this->getAngleVelocity() ) )
-		this->rotate( this->getAngleVelocity(), deltaT );
+	if( !Math::isNullVector( this->angle_velocity_ ) ) {
+		if( !checked ) {
+			SceneManager::instance()->getSceneGraph()->getNearbyNodes( this, &nearbyNodes );
+			checked = true;
+		}
+		this->rotate( this->angle_velocity_, deltaT );
+	}
+};
+
+void SceneNode::getNearbyNodes( SceneNode *node, std::vector<SceneNode*> *result ) {
+	if( this != node )
+		result->push_back( this );
+};
+
+bool SceneNode::checkCollision( SceneNode *node ) {
+	if( this->boundingBox_.size() == 8 )
+		return Collision::GJKCollide( &(this->boundingBox_), node->getBoundingBox() );
+	return false;
 };

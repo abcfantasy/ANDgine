@@ -248,6 +248,7 @@ bool HeightMapModel::loadFromImage() {
 	return true;
 };
 
+// Gets the interpolated height at the coordinates given
 float HeightMapModel::getHeight( float x, float z ) {
 	int coordX, coordZ;
 	float scaleX, scaleZ;
@@ -280,4 +281,12 @@ void HeightMapModel::rescale( float minScale, float maxScale ) {
 
 	this->minScale_ = minScale;
 	this->maxScale_ = maxScale;
+};
+
+// Special collision method - we're not using a bounding box for this kind of model
+// We're checking the height at each point
+bool HeightMapModel::checkSpecialCollision( float *position ) {
+	float height = getHeight( position[0], position[2] );
+	if( height > position[1] + 0.2 ) return true;
+	return false;
 };

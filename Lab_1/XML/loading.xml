@@ -4,7 +4,31 @@
 		<player>
 			<location>Models\player.obj</location>
 			<texture>Textures\player.jpg</texture>
+			<translation>
+				<x>0.0</x>
+				<y>0.5</y>
+				<z>0.0</z>
+			</translation>
+			<velocity>
+				<x>0.0</x>
+				<y>-0.5</y>
+				<z>0.0</z>
+			</velocity>
 		</player>
+		<model>
+			<location>Models\smiley.obj</location>
+			<translation>
+				<x>0.0</x>
+				<y>5.0</y>
+				<z>-5.0</z>
+			</translation>
+			<velocity>
+				<x>0.0</x>
+				<y>-0.5</y>
+				<z>0.0</z>
+			</velocity>
+			<texture>Textures\smile.jpg</texture>
+		</model>
 		<heightmap>
 			<!--<location>Heightmaps\gradient.tga</location>-->
 			<texture>Textures\road.jpg</texture>
@@ -15,7 +39,7 @@
 				<z>-128.0f</z>
 			</translation>
 		</heightmap>
-		<model>
+		<!--<model>
 			<location>Models\planet3f.obj</location>
 			<name>planet</name>
 			<velocity>
@@ -54,6 +78,6 @@
 				<z>0.0f</z>
 			</translation>
 			<texture>Textures\world.jpg</texture>
-		</model>
+		</model>-->
 	</cell1x1>
 </levels>

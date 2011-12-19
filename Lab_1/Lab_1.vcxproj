@@ -70,7 +70,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ContainerNode.cpp">
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -110,7 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="ContainerNode.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectNode.h" />

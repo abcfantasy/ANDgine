@@ -68,6 +68,7 @@ void Model::render() {
 	glCallList( this->displayListId_ );
 };
 
+// Loads the model from its OBJ file
 bool Model::load() {
 	FILE *fp;
 	char line[100];
@@ -171,3 +172,10 @@ bool Model::load() {
     fclose(fp);
 	return true;
 };
+
+// Special collision conditions
+// This *should* be overriden if needed
+// Returns true by default
+bool Model::checkSpecialCollision( float *position ) {
+	return true;
+}

@@ -2,7 +2,6 @@
 #include "SDL.h"
 
 #include "SoundManager.h"
-#include "CollisionManager.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
 
@@ -54,8 +53,6 @@ void SceneManager::initializeScene(char *input_xml, char *cell) {
 				float max = (float)atof( subNode->first_attribute("max")->value() );
 				terrain->rescale( min, max );
 			}
-
-			this->sceneGraph_.addObject( terrainNode );
 		} else if( cur_node && strcmp( cur_node->name(), "model") == 0 ) {
 			Model *newModel = ResourceManager::instance()->get<Model>( cur_node->first_node("location")->value() );
 			newNode = new GameObjectNode( new GameObject( newModel ) );			
@@ -64,6 +61,13 @@ void SceneManager::initializeScene(char *input_xml, char *cell) {
 		subNode = cur_node->first_node("texture");
 		if( subNode ) newNode->getGameObject()->getModel()->setTexture( subNode->value() );
 
+		subNode = cur_node->first_node( "acceleration" );
+		if( subNode ) {
+			x = (float)atof( subNode->first_node("x")->value() );
+			y = (float)atof( subNode->first_node("y")->value() );
+			z = (float)atof( subNode->first_node("z")->value() );
+			newNode->setAcceleration(x,y,z);
+		}
 		subNode = cur_node->first_node( "velocity" );
 		if( subNode ) {
 			x = (float)atof( subNode->first_node("x")->value() );
@@ -103,16 +107,16 @@ void SceneManager::initializeScene(char *input_xml, char *cell) {
 
 void SceneManager::renderScene() {
 	int timeThisFrame = SDL_GetTicks();
-	float deltaT = float(timeThisFrame - timeLastFrame_);
+	float deltaT = float(timeThisFrame - timeLastFrame_) / 1000.0f;
 	this->timeLastFrame_ = timeThisFrame;
-	if( deltaT > 1000.0f/30.0f )
-		deltaT = 1000.0f/30.0f;
+	if( deltaT > 1.0f/30.0f )
+		deltaT = 1.0f/30.0f;
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glLoadIdentity();
 
 	this->sceneGraph_.render( deltaT );
-
+	
 	// check heightmap
 	float pos[4];
 	if( terrainNode != NULL ) {
@@ -124,17 +128,6 @@ void SceneManager::renderScene() {
 
 	// change ambient sound
 	SoundManager::instance()->ChangeAmbientEffect( playerNode_->getPosition(), playerNode_->getRotation()[1] );
-
-	// TESTING COLLISION
-	/*
-	if ( playerNode_ != NULL && pyramid2Node != NULL )
-	{
-	if ( CollisionManager::instance()->GJKCollide( playerNode_->getBoundingBox(), pyramid2Node->getBoundingBox() ) )
-	{
-		// do something to show that two pyramids made BOOM
-		SceneManager::instance()->getPlayerNode()->addVelocity( 0.0f, 1.0f, 0.0f );
-	}
-	}*/
 
 	SDL_GL_SwapBuffers();
 };

@@ -4,10 +4,11 @@
 #include "SDL_opengl.h"
 
 ContainerNode::ContainerNode() {
-	this->setRotation( 0, 0, 0 );
-	this->setPosition( 0, 0, 0 );
-	this->setVelocity( 0, 0, 0 );
-	this->setAngleVelocity( 0, 0, 0 );
+	this->setRotation( 0.0f, 0.0f, 0.0f );
+	this->setPosition( 0.0f, 0.0f, 0.0f );
+	this->setVelocity( 0.0f, 0.0f, 0.0f );
+	this->setAcceleration( 0.0f, 0.0f, 0.0f );
+	this->setAngleVelocity( 0.0f, 0.0f, 0.0f );
 	this->displayListId_ = SceneNode::INVALID_HANDLE;
 };
 
@@ -49,4 +50,10 @@ void ContainerNode::render( float deltaT ) {
 	}
 
 	glPopMatrix();
+};
+
+void ContainerNode::getNearbyNodes( SceneNode *node, std::vector<SceneNode*> *result ) {
+	for( std::vector< SceneNode* >::iterator i = this->objects_.begin(); i != this->objects_.end(); ++i )
+		if( (*i) != node )
+			(*i)->getNearbyNodes( node, result );
 };

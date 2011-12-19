@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 
 PlayerNode::PlayerNode( GameObject *gameObject ) : GameObjectNode( gameObject ) {
+	// Initializing the camera behind the player
 	this->camera_.positionCamera(
 		this->position_[0],	this->position_[1] + 2.0f,	this->position_[2] + 4.0f,
 		this->position_[0],	this->position_[1],			this->position_[2]
@@ -16,10 +17,12 @@ PlayerNode::~PlayerNode() {
 	delete skyBox_;
 };
 
+// Overriding the render function to properly adjust for mouse movement and render the camera as well
 void PlayerNode::render( float deltaT ) {
 	float angle_x, angle_y;
 	bool *keys;
 
+	// This is a good place to rotate the camera
 	InputManager::instance()->getMouseAngle( &angle_x, &angle_y );
 	keys = InputManager::instance()->getKeys();
 	if( keys[ SDLK_SPACE ] ) {
@@ -27,6 +30,7 @@ void PlayerNode::render( float deltaT ) {
 	} else {
 		this->rotate( angle_x, angle_y, 0.0f );
 	}
+
 	this->applyVelocity( deltaT );
 	this->camera_.render();
 	if( this->displayListId_ == SceneNode::INVALID_HANDLE ) this->compile();
@@ -39,6 +43,8 @@ void PlayerNode::render( float deltaT ) {
 	this->skyBox_->render( deltaT );
 };
 
+// Overriding the SceneNode rotate and translate methods
+// So they rotate the object, camera and skybox at the same time
 
 void PlayerNode::rotate( float x, float y, float z, float deltaT ) {
 	this->camera_.rotate( x, y, deltaT );
@@ -50,12 +56,6 @@ void PlayerNode::rotate( float rotation[3], float deltaT ) {
 };
 
 void PlayerNode::translate( float x, float y, float z, float deltaT ) {
-	// update bounding box
-	for ( unsigned int i = 0; i < this->boundingBox_.size(); i++ ) {
-		boundingBox_[i].setX( boundingBox_[i].getX() + ( x * deltaT / 1000.0f ) );
-		boundingBox_[i].setY( boundingBox_[i].getY() + ( y * deltaT / 1000.0f ) );
-		boundingBox_[i].setZ( boundingBox_[i].getZ() + ( z * deltaT / 1000.0f ) );
-	}
 	this->camera_.translate( x, y, z, deltaT );
 	this->skyBox_->translate( x, y, z, deltaT );
 	SceneNode::translate( x, y, z, deltaT );

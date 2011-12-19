@@ -27,6 +27,7 @@ public:
 	// Render the contained objects recursively
 	// deltaT is the parameter that controls how much the objects should move (if they can move)
 	void render( float deltaT );
+	void getNearbyNodes( SceneNode *node, std::vector<SceneNode*> *result );
 };
 
 #endif

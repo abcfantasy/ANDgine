@@ -1,6 +1,8 @@
 #ifndef _SCENENODE_H_
 #define _SCENENODE_H_
 
+#include <vector>
+#include "Vertex3f.h"
 #include "SDL_opengl.h"
 #include "Math.h"
 
@@ -22,6 +24,12 @@ protected:
 	// Speed at which the object rotates; expressed as degrees/second
 	float angle_velocity_[3];
 
+	// Acceleration for translation
+	float acceleration_[3];
+
+	// The bounding box for collision
+	std::vector<Vertex3f> boundingBox_;
+
 public:
 	// Constant used to check if a value is invalid
 	static const GLuint INVALID_HANDLE = 0xFFFFFFFF;
@@ -32,6 +40,7 @@ public:
 	inline int getDisplayListId() { return this->displayListId_; };
 	inline float* getVelocity() { return this->velocity_; };
 	inline float* getAngleVelocity() { return this->angle_velocity_; };
+	inline std::vector<Vertex3f>* getBoundingBox() { return &(this->boundingBox_); };
 
 	inline void setDisplayListId( int id ) { this->displayListId_ = id; };
 	void setRotation( float x, float y, float z );
@@ -40,6 +49,8 @@ public:
 	void setPosition( float position[3] );
 	void setVelocity( float x, float y, float z );
 	void setVelocity( float velocity[3] );
+	void setAcceleration( float x, float y, float z );
+	void setAcceleration( float acceleration[3] );
 	void addVelocity( float x, float y, float z );
 	void addVelocity( float velocity[3] );
 	void setAngleVelocity( float x, float y, float z );
@@ -53,15 +64,15 @@ public:
 
 	// Rotates the object
 	// The rotation is given as 3 components representing the rotation on each axis
-	// deltaT is used as a multiplier; Default = 1000.0f
-	virtual void rotate( float x, float y, float z, float deltaT = 1000.0f );
-	virtual void rotate( float rotation[3], float deltaT = 1000.0f );
+	// deltaT is used as a multiplier; Default = 1.0f
+	virtual void rotate( float x, float y, float z, float deltaT = 1.0f );
+	virtual void rotate( float rotation[3], float deltaT = 1.0f );
 	
 	// Translates the object along the world axis
 	// The translation is given as 3 components representing the translation on each axis
-	// deltaT is used as a multiplier; Default = 1000.0f
-	virtual void translate( float x, float y, float z, float deltaT = 1000.0f );
-	virtual void translate( float position[3], float deltaT = 1000.0f );
+	// deltaT is used as a multiplier; Default = 1.0f
+	virtual void translate( float x, float y, float z, float deltaT = 1.0f );
+	virtual void translate( float position[3], float deltaT = 1.0f );
 
 	// Virtual methods used for compiling the graphics data into a display list
 	virtual void compile() = 0;
@@ -69,6 +80,10 @@ public:
 	virtual void render( float deltaT ) = 0;
 	// And for applying the velocities
 	virtual void applyVelocity( float deltaT );
+	// And to retrieve particular nodes
+	virtual void getNearbyNodes( SceneNode *node, std::vector<SceneNode*> *result );
+	// Collision testing via the bounding box
+	virtual bool checkCollision( SceneNode *node );
 };
 
 #endif
