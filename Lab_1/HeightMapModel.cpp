@@ -147,7 +147,15 @@ bool HeightMapModel::loadFromSeed() {
 	// SDL_GetTicks() is a pretty random seed
 	// High h => smooth map
 	// Low h => rough map
-	HeightMapGen::fill2DFractArray( map, 256, SDL_GetTicks(), 1, 0.5f );
+
+	// TEST
+	float map1[9*9];
+	HeightMapGen::generateHeightMap( map1, 8, SDL_GetTicks(), 1, 1.0f );
+	float map2[9*9];
+	HeightMapGen::generateHeightMapNorth( map2, 8, SDL_GetTicks(), 1, 1.0f, map1 );
+
+	// END TEST
+	HeightMapGen::generateHeightMap( map, 256, SDL_GetTicks(), 1, 1.0f );
 
 	this->width_ = this->length_ = 257;
 	float textureIncrementX = 1.0f / this->width_;

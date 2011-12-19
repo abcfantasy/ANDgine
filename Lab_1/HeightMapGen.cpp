@@ -146,10 +146,16 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
        point. This will allow us to tile the arrays next to each other
        such that they join seemlessly. */
     stride = subSize / 2;
-    map[0] =
+    if ( map[0] == 999 ) map[0] = 0.0f;
+	if ( map[(subSize*size)] == 999 ) map[(subSize*size)] = 0.0f;
+	if ( map[(subSize*size)+subSize] == 999 ) map[(subSize*size)+subSize] = 0.0f;
+	if ( map[subSize] == 999 ) map[subSize] = 0.0f;
+	/*
+	map[0] =
       map[(subSize*size)] =
         map[(subSize*size)+subSize] =
           map[subSize] = 0.0f;
+	*/
 
 	/* Now we add ever-increasing detail based on the "diamond" seeded
        values. We loop over stride, which gets cut in half at the
@@ -176,9 +182,10 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
 	      center of the array. */
 		for (int i = stride; i < subSize; i += stride) {
 			for (int j = stride; j < subSize; j += stride) {
-				map[(i * size) + j] =
-					scale * HeightMapGen::randnum(-0.5f, 0.5f) +
-					HeightMapGen::avgSquareVals(i, j, stride, size, map);
+				if ( map[(i * size) + j] == 999 )	// only if value is not already set
+					map[(i * size) + j] =
+						scale * HeightMapGen::randnum(-5.5f, 5.5f) + //0.25
+						HeightMapGen::avgSquareVals(i, j, stride, size, map);
 				j += stride;
 			}
 			i += stride;
@@ -212,19 +219,21 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
 				/* i and j are setup. Call avgDiamondVals with the
 				   current position. It will return the average of the
 				   surrounding diamond data points. */
-				map[(i * size) + j] =
-					scale * HeightMapGen::randnum(-0.5f, 0.5f) +
-					HeightMapGen::avgDiamondVals(i, j, stride, size, subSize, map);
+				if ( map[(i * size) + j] == 999 )	// only if value is not already set
+					map[(i * size) + j] =
+						scale * HeightMapGen::randnum(-5.5f, 5.5f) +
+						HeightMapGen::avgDiamondVals(i, j, stride, size, subSize, map);
 
 				/* To wrap edges seamlessly, copy edge values around
 				   to other side of array */
-				if (i==0)
+				
+				if ( i==0 && map[(subSize*size) + j] == 999 )
 					map[(subSize*size) + j] =
 						map[(i * size) + j];
-				if (j==0)
+				if (j==0 && map[(i*size) + subSize] == 999 )
 					map[(i*size) + subSize] =
 						map[(i * size) + j];
-
+				
 				j+=stride;
 			}
 		}
@@ -233,4 +242,79 @@ void HeightMapGen::fill2DFractArray (float *map, int size, int seedValue, float 
 		scale *= ratio;
 		stride >>= 1;
 	}
+}
+
+void HeightMapGen::generateHeightMap( float *map, int size, int seedValue, float heightScale, float h )
+{
+	// mark all cells empty
+	for ( int i = 0; i <= ( ( size * ( size + 1 ) ) + size ); i++ )
+	{
+		map[i] = 999;
+	}
+	// fill the array
+	fill2DFractArray( map, size, seedValue, heightScale, h );
+}
+
+// generates a height map in the north (i.e. SOUTH edge matching with current NORTH edge)
+void HeightMapGen::generateHeightMapNorth( float *map, int size, int seedValue, float heightScale, float h, float *previousMap )
+{
+	// mark all cells empty except the south edge
+	for ( int i = 0; i <= ( ( size * ( size + 1 ) ) + size ); i++ )
+	{
+		// set the SOUTH edge of the new map exactly like the NORTH edge of the old map
+		if ( i >= ( size * ( size + 1 ) ) )
+			map[i] = previousMap[i - ( size * ( size + 1 ) )];
+		else
+			map[i] = 999;
+	}
+	// fill the array
+	fill2DFractArray( map, size, seedValue, heightScale, h );
+}
+
+// generates a height map in the south (i.e. NORTH edge matching with current SOUTH edge)
+void HeightMapGen::generateHeightMapSouth( float *map, int size, int seedValue, float heightScale, float h, float *previousMap )
+{
+	// mark all cells empty except the north edge
+	for ( int i = 0; i <= ( ( size * ( size + 1 ) ) + size ); i++ )
+	{
+		// set the NORTH edge of the new map exactly like the SOUTH edge of the old map
+		if ( i <= ( size + 1 ) )
+			map[i] = previousMap[i + ( size * ( size + 1 ) )];
+		else
+			map[i] = 999;
+	}
+	// fill the array
+	fill2DFractArray( map, size, seedValue, heightScale, h );
+}
+
+// generates a height map in the west (i.e. EAST edge matching with current WEST edge)
+void HeightMapGen::generateHeightMapWest( float *map, int size, int seedValue, float heightScale, float h, float *previousMap )
+{
+	// mark all cells empty except the east edge
+	for ( int i = 0; i <= ( ( size * ( size + 1 ) ) + size ); i++ )
+	{
+		// set the EAST edge of the new map exactly like the WEST edge of the old map
+		if ( i % (size + 1 ) == size )
+			map[i] = previousMap[i - size];
+		else
+			map[i] = 999;
+	}
+	// fill the array
+	fill2DFractArray( map, size, seedValue, heightScale, h );
+}
+
+// generates a height map in the east (i.e. WEST edge matching with current EAST edge)
+void HeightMapGen::generateHeightMapEast( float *map, int size, int seedValue, float heightScale, float h, float *previousMap )
+{
+	// mark all cells empty except the east edge
+	for ( int i = 0; i <= ( ( size * ( size + 1 ) ) + size ); i++ )
+	{
+		// set the WEST edge of the new map exactly like the EAST edge of the old map
+		if ( i % (size + 1 ) == 0 )
+			map[i] = previousMap[i + size];
+		else
+			map[i] = 999;
+	}
+	// fill the array
+	fill2DFractArray( map, size, seedValue, heightScale, h );
 }

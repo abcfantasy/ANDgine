@@ -4,6 +4,7 @@
 #include "SDL_mixer.h"
 #include <map>
 
+// Class that handles sound and music
 class SoundManager
 {
 

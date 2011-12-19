@@ -1,13 +1,16 @@
 <?xml version='1.0' encoding="utf-8"?>
 <levels>
-	<cell1x1>
+	<player>
 		<player>
 			<location>Models\player.obj</location>
 			<texture>Textures\player.jpg</texture>
 		</player>
+	</player>
+	<cell1x1>
 		<heightmap>
+			<location>Heightmaps\1x1.tga</location>
 			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="50.0f" />
+			<scale min="0.0f" max ="5.0f" />
 			<translation>
 				<x>-128.0f</x>
 				<y>0.0f</y>
@@ -55,4 +58,42 @@
 			<texture>Textures\world.jpg</texture>
 		</model>
 	</cell1x1>
+	<cell2x1>
+		<heightmap>
+			<location>Heightmaps\2x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>128.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell2x1>
+	<cell3x1>
+		<heightmap>
+			<location>Heightmaps\3x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>384.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell3x1>
+	<cell4x1>
+		<heightmap>
+			<location>Heightmaps\4x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>640.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell4x1>
+	
+
 </levels>

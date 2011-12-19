@@ -17,8 +17,6 @@ protected:
 	LightingManager(void);
 
 public:
-	//~LightingManager(void);
-
 	// singleton
 	static LightingManager* instance();
 

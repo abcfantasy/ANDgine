@@ -1,36 +1,14 @@
 <?xml version='1.0' encoding="utf-8"?>
 <levels>
-	<cell1x1>
+	<player>
 		<player>
 			<location>Models\player.obj</location>
 			<texture>Textures\player.jpg</texture>
-			<translation>
-				<x>0.0</x>
-				<y>0.5</y>
-				<z>0.0</z>
-			</translation>
-			<velocity>
-				<x>0.0</x>
-				<y>-0.5</y>
-				<z>0.0</z>
-			</velocity>
 		</player>
-		<model>
-			<location>Models\smiley.obj</location>
-			<translation>
-				<x>0.0</x>
-				<y>5.0</y>
-				<z>-5.0</z>
-			</translation>
-			<velocity>
-				<x>0.0</x>
-				<y>-0.5</y>
-				<z>0.0</z>
-			</velocity>
-			<texture>Textures\smile.jpg</texture>
-		</model>
+	</player>
+	<cell1x1>
 		<heightmap>
-			<!--<location>Heightmaps\gradient.tga</location>-->
+			<location>Heightmaps\1x1.tga</location>
 			<texture>Textures\road.jpg</texture>
 			<scale min="0.0f" max ="5.0f" />
 			<translation>
@@ -39,45 +17,43 @@
 				<z>-128.0f</z>
 			</translation>
 		</heightmap>
-		<!--<model>
-			<location>Models\planet3f.obj</location>
-			<name>planet</name>
-			<velocity>
-				<x>0.0f</x>
-				<y>0.0f</y>
-				<z>0.0f</z>
-			</velocity>
-			<angleVelocity>
-				<x>20.0f</x>
-				<y>00.0f</y>
-				<z>0.0f</z>
-			</angleVelocity>
-			<translation>
-				<x>0.0f</x>
-				<y>0.0f</y>
-				<z>0.0f</z>
-			</translation>
-			<texture>Textures\world2.jpg</texture>
-		</model>
-		<model>
-			<location>Models\planet3f2.obj</location>
-			<name>planet2</name>
-			<velocity>
-				<x>0.0f</x>
-				<y>0.0f</y>
-				<z>0.0f</z>
-			</velocity>
-			<angleVelocity>
-				<x>00.0f</x>
-				<y>20.0f</y>
-				<z>0.0f</z>
-			</angleVelocity>
-			<translation>
-				<x>0.0f</x>
-				<y>0.0f</y>
-				<z>0.0f</z>
-			</translation>
-			<texture>Textures\world.jpg</texture>
-		</model>-->
 	</cell1x1>
+	<cell2x1>
+		<heightmap>
+			<location>Heightmaps\2x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>128.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell2x1>
+	<cell3x1>
+		<heightmap>
+			<location>Heightmaps\3x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>384.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell3x1>
+	<cell4x1>
+		<heightmap>
+			<location>Heightmaps\4x1.tga</location>
+			<texture>Textures\road.jpg</texture>
+			<scale min="0.0f" max ="5.0f" />
+			<translation>
+				<x>640.0f</x>
+				<y>0.0f</y>
+				<z>-128.0f</z>
+			</translation>
+		</heightmap>
+	</cell4x1>
+	
+
 </levels>
