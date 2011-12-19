@@ -34,6 +34,10 @@ public:
 	// Renders a frame (it tracks deltaT by itself)
 	void renderScene();
 
+	void loadPlayer();
+	void loadCell(char *cell );
+	void checkIfNextCell();
+
 	static void keyDown( SDLKey key, SDLMod mod );
 	static void keyUp( SDLKey key, SDLMod mod );
 };

@@ -11,6 +11,7 @@ CollisionManager* CollisionManager::instance()
 	return &cm;
 }
 
+// returns the furthest point in a shape in a given direction
 float* CollisionManager::GetFarthestPointInDirection( std::vector<float*> shape, float* direction )
 {
 	float* farthestPoint = shape[0];
@@ -28,6 +29,7 @@ float* CollisionManager::GetFarthestPointInDirection( std::vector<float*> shape,
 	return farthestPoint;
 }
 
+// the support function performs the minkowski difference of two shapes
 void CollisionManager::support( std::vector<float*> shape1Vertices, std::vector<float*> shape2Vertices, float* d, float* result )
 {
 	// d is a vector direction (not necessarily normalized)
@@ -40,6 +42,8 @@ void CollisionManager::support( std::vector<float*> shape1Vertices, std::vector<
 	Math::subtract( p1, p2, result );
 	// result is now a point in minkowski space on the edge of the minkowski difference
 }
+
+// checks if the given shape contains the origin
 bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 {
 	// get the last point added to the simplex
@@ -274,6 +278,7 @@ bool CollisionManager::containsOrigin( std::vector<float*> *s, float* d )
 	return false;
 }
 
+// checks if two shapes collide using the GJK algorithm
 bool CollisionManager::GJKCollide( std::vector<Vertex3f>* shape1, std::vector<Vertex3f>* shape2 )
 {
 	// change vector3f to float array
