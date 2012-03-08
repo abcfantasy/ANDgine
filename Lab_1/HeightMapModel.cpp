@@ -7,6 +7,9 @@
 
 #include "HeightMapGen.h"
 
+int HeightMapModel::NEXT_DIRECTION = HeightMapModel::DIRECTION_NORTH;
+float* HeightMapModel::PREVIOUS_MAP = NULL;
+
 // Easy access to a particular vertex
 // heightmap( i, j ) = the vertex at position i,j
 Vertex3f* HeightMapModel::operator()( int i, int j ) {
@@ -148,14 +151,27 @@ bool HeightMapModel::loadFromSeed() {
 	// High h => smooth map
 	// Low h => rough map
 
-	// TEST
-	float map1[9*9];
-	HeightMapGen::generateHeightMap( map1, 8, SDL_GetTicks(), 1, 1.0f );
-	float map2[9*9];
-	HeightMapGen::generateHeightMapNorth( map2, 8, SDL_GetTicks(), 1, 1.0f, map1 );
+	if( PREVIOUS_MAP != NULL ) {
+	switch( NEXT_DIRECTION ) {
+		case DIRECTION_NORTH:
+			HeightMapGen::generateHeightMapNorth( map, 256, SDL_GetTicks(), 1, 1.0f, PREVIOUS_MAP );
+			break;
+		case DIRECTION_SOUTH:
+			HeightMapGen::generateHeightMapSouth( map, 256, SDL_GetTicks(), 1, 1.0f, PREVIOUS_MAP );
+			break;
+		case DIRECTION_EAST:
+			HeightMapGen::generateHeightMapEast( map, 256, SDL_GetTicks(), 1, 1.0f, PREVIOUS_MAP );
+			break;
+		case DIRECTION_WEST:
+			HeightMapGen::generateHeightMapWest( map, 256, SDL_GetTicks(), 1, 1.0f, PREVIOUS_MAP );
+			break;
+		}
+		delete[] PREVIOUS_MAP;
+		PREVIOUS_MAP = NULL;
+	} else
+		HeightMapGen::generateHeightMap( map, 256, SDL_GetTicks(), 1, 1.0f );
 
-	// END TEST
-	HeightMapGen::generateHeightMap( map, 256, SDL_GetTicks(), 1, 1.0f );
+	//HeightMapGen::generateHeightMap( map, 256, SDL_GetTicks(), 1, 1.0f );
 
 	this->width_ = this->length_ = 257;
 	float textureIncrementX = 1.0f / this->width_;

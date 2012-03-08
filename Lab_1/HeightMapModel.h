@@ -19,6 +19,14 @@ private:
 	void computeNormals();
 
 public:
+	static const int DIRECTION_NORTH = 0;
+	static const int DIRECTION_SOUTH = 1;
+	static const int DIRECTION_EAST  = 2;
+	static const int DIRECTION_WEST  = 3;
+
+	static int NEXT_DIRECTION;
+	static float *PREVIOUS_MAP;
+
 	// Builds a heightmap from a TGA image and scaling parameters
 	// For example, give it a scale between 0.0f and 10.0f all the heights will be interpolated between 0.0f and 10.0f
 	HeightMapModel( const unsigned int handle, char *fileName, float minScale = 0.0f, float maxScale = 1.0f ) :

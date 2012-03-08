@@ -4,7 +4,6 @@
 // Static class that generates a random heightmap
 class HeightMapGen
 {
-
 private:
 	// private functions that aid in the generation method
 	static float randnum (float min, float max);

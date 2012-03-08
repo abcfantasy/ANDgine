@@ -4,56 +4,47 @@
 		<player>
 			<location>Models\player.obj</location>
 			<texture>Textures\player.jpg</texture>
+			<translation>
+				<x>128</x>
+				<y>0</y>
+				<z>128</z>
+			</translation>
 		</player>
 	</player>
-	<cell1x1>
+	<cell0x0>
 		<heightmap>
-			<location>Heightmaps\1x1.tga</location>
+			<location>Heightmaps\0x0.tga</location>
 			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="5.0f" />
-			<translation>
-				<x>-128.0f</x>
-				<y>0.0f</y>
-				<z>-128.0f</z>
-			</translation>
+			<scale min="0.0f" max ="10.0f" />
 		</heightmap>
-	</cell1x1>
-	<cell2x1>
-		<heightmap>
-			<location>Heightmaps\2x1.tga</location>
-			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="5.0f" />
+		<model>
+			<location>Models\smiley.obj</location>
+			<texture>Textures\smile.jpg</texture>
 			<translation>
-				<x>128.0f</x>
-				<y>0.0f</y>
-				<z>-128.0f</z>
+				<x>133</x>
+				<y>15</y>
+				<z>128</z>
 			</translation>
-		</heightmap>
-	</cell2x1>
-	<cell3x1>
-		<heightmap>
-			<location>Heightmaps\3x1.tga</location>
-			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="5.0f" />
+			<velocity>
+				<x>0</x>
+				<y>-1.0</y>
+				<z>0</z>
+			</velocity>
+		</model>
+		<model>
+			<location>Models\smiley.obj</location>
+			<texture>Textures\smile.jpg</texture>
 			<translation>
-				<x>384.0f</x>
-				<y>0.0f</y>
-				<z>-128.0f</z>
+				<x>128</x>
+				<y>15</y>
+				<z>133</z>
 			</translation>
-		</heightmap>
-	</cell3x1>
-	<cell4x1>
-		<heightmap>
-			<location>Heightmaps\4x1.tga</location>
-			<texture>Textures\road.jpg</texture>
-			<scale min="0.0f" max ="5.0f" />
-			<translation>
-				<x>640.0f</x>
-				<y>0.0f</y>
-				<z>-128.0f</z>
-			</translation>
-		</heightmap>
-	</cell4x1>
-	
+			<velocity>
+				<x>0</x>
+				<y>-2</y>
+				<z>0</z>
+			</velocity>
+		</model>
 
+	</cell0x0>
 </levels>
